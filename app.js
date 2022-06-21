@@ -9,9 +9,6 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
-//3000포트를 사용하는 실행 앱에서 cors를 허용하기 위해서 아래 2줄 추가
-var cors = require('cors')
-app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -57,7 +54,7 @@ var http = require('http').createServer(app);
 //var io = require('socket.io').listen(http);/* "socket.io": "2.3.0" 이하 버전 기준입니다. 최신번전에서는 아래로 대체. */
 var io = require("socket.io")(http, { //현재는 socket.io 는 4.5.1 버전이다. http서버 소켓통신에서 cors 허용하기 위해서 아래 추가
 	cors: {
-	  origin: "*",
+	  origin: "https://nodejs-jvbqr.run.goorm.io", //도메인 대신에 * 로 하면 모든 도메인에서 허용된다. 보안상 도메인을 지정하는것이 안전하다.
 	  methods: ["GET", "POST"]
 	}
 });
