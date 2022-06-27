@@ -19,8 +19,6 @@
 <button id="btnVote">투표하기</button>
 <button id="btnVoteDel">초기화하기</button>
 <button id="btnHome">홈페이지로이동</button>
-<canvas id="myChart2" width="400" height="400"></canvas>
-
 
 <script>
 var btnVote = document.getElementById('btnVote');//투표하기 버튼객체 생성
@@ -67,7 +65,9 @@ var myChart = new Chart(ctx, {
     },
     options: options_line_bar
 });
-//================================================================================================
+</script>
+<canvas id="myChart2" width="400" height="400"></canvas>
+<script>
 //myChart2 시작
 var datasets_radar = [{ //데이터내용 배열 객체 생성
     label: '본인이 좋아하는 색상 설문조사',

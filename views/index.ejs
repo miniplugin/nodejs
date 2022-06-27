@@ -1,11 +1,172 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+	<head>
+		<meta charset="UTF-8" />
+		<title>오픈챠트 시작</title>
+		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
+	</head>
+	<body>
+		<canvas id="myChart" width="400" height="400"></canvas>
+		<select id="selVote">
+			<option value="red">Red</option>
+			<option value="blue">Blue</option>
+			<option value="yellow">Yellow</option>
+			<option value="green">Green</option>
+			<option value="purple">Purple</option>
+			<option value="orange">Orange</option>
+		</select>
+		<button id="btnVote">투표하기</button>
+		<button id="btnVoteDel">초기화하기</button>
+		<button id="btnHome">홈페이지로이동</button>
+
+		<script>
+			var btnVote = document.getElementById('btnVote'); //투표하기 버튼객체 생성
+			var selVote = document.getElementById('selVote'); //좋아하는색성 선택객체 생성
+			var jsonData = { red: 12, blue: 19, yellow: 3, green: 5, purple: 2, orange: 3 }; //초기 json 데이터객체 생성
+			//var jsonData = [12, 19, 3, 5, 2, 3];//참조: 자바스크립트의 배열구조
+			var ctx = document.getElementById('myChart').getContext('2d'); //막대그래프 출력영역 객체 생성
+
+			//myChart 시작
+			var datasets_line_bar = [
+				{
+					//데이터내용 배열 객체 생성
+					label: '본인이 좋아하는 색상 설문조사',
+					data: jsonData,
+					backgroundColor: [
+						'rgba(255, 99, 132, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(153, 102, 255, 0.2)',
+						'rgba(255, 159, 64, 0.2)',
+					],
+					borderColor: [
+						'rgba(255, 99, 132, 1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)',
+						'rgba(255, 159, 64, 1)',
+					],
+					borderWidth: 1,
+				},
+			];
+			var options_line_bar = {
+				//데이터 출력옵션 객체
+				scales: {
+					y: {
+						beginAtZero: true,
+					},
+				},
+			};
+			//myChart 객체 생성(아래)  : 여기서 ctx 영역에 Chart 데이터 객체가 출력된다.
+			var myChart = new Chart(ctx, {
+				type: 'bar', //radar, doughnut, pie, polar, bubble, scatter, area 챠트종류 선택
+				data: {
+					labels: [],
+					datasets: datasets_line_bar,
+				},
+				options: options_line_bar,
+			});
+		</script>
+
+		<canvas id="myChart2" width="400" height="400"></canvas>
+		<script>
+			var ctx2 = document.getElementById('myChart2').getContext('2d'); //레이더그래프 출력영역 객체 생성
+			//myChart2 시작
+			var datasets_radar = [
+				{
+					//데이터내용 배열 객체 생성
+					label: '본인이 좋아하는 색상 설문조사',
+					data: [
+						jsonData.red,
+						jsonData.blue,
+						jsonData.yellow,
+						jsonData.green,
+						jsonData.purple,
+						jsonData.orange,
+					],
+					fill: true,
+					radius: 6, //각 data 항목이 6개의 이미지가 원형이고, 그 크기를 반지름
+					pointRadius: 6,
+					pointBorderWidth: 6,
+					pointBackgroundColor: [
+						'rgba(255,99,132,0.2)',
+						'rgba(54,162,235,0.2)',
+						'rgba(255,206,86,0.2)',
+						'rgba(75,192,192,0.2)',
+						'rgba(153,102,255,0.2)',
+						'rgba(255,159,64,0.2)',
+					],
+					pointBackgroundColor: [
+						'rgba(255,99,132,1)',
+						'rgba(54,162,235,1)',
+						'rgba(255,206,86,1)',
+						'rgba(75,192,192,1)',
+						'rgba(153,102,255,1)',
+						'rgba(255,159,64,1)',
+					],
+					pointHoverRadius: 10,
+				},
+			];
+			var options_radar = {
+				//데이터 출력옵션 객체
+				scale: {
+					gridLines: {
+						color: 'black',
+						lineWidth: 3,
+					},
+					angleLines: {
+						display: true,
+					},
+					ticks: {
+						beginAtZero: true,
+						stepSize: 1,
+					},
+				},
+				legend: {
+					//범례
+					position: 'left',
+				},
+			};
+			//myChart2 객체 생성(아래) : 여기서 ctx2 영역에 Chart 데이터 객체가 출력된다.
+			var myChart2 = new Chart(ctx2, {
+				type: 'radar',
+				data: {
+					labels: [
+						selVote[0].value,
+						selVote[1].value,
+						selVote[2].value,
+						selVote[3].value,
+						selVote[4].value,
+						selVote[5].value,
+					],
+					datasets: datasets_radar,
+				},
+				options: options_radar,
+			});
+		</script>
+		<script>
+			$('#btnVoteDel').on('click', function () {
+				if (confirm('정말로 초기화 하시겠습니까, 투표한 DB자료가 삭제됩니다.')) {
+					//구현내용
+				}
+			});
+			btnVote.onclick = function () {
+				var voteIdx = document.getElementById('selVote').options.selectedIndex;
+				alert(voteIdx);
+			};
+		</script>
+		<script>
+			$(document).ready(function () {
+				//페이지 로딩시 챠트에 초기 데이터 바인딩 코딩 추가예정.
+				
+				//홈페이지로 이동
+				$('#btnHome').on('click', function () {
+					location.replace('/');
+				});
+			});
+		</script>
+	</body>
 </html>
