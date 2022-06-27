@@ -26,7 +26,6 @@ var selVote = document.getElementById('selVote');//좋아하는색성 선택객�
 var jsonData = {"red":12,"blue":19,"yellow":3,"green":5,"purple":2,"orange":3};//초기 json 데이터객체 생성
 //var jsonData = [12, 19, 3, 5, 2, 3];//참조: 자바스크립트의 배열구조
 var ctx = document.getElementById('myChart').getContext('2d');//막대그래프 출력영역 객체 생성
-var ctx2 = document.getElementById('myChart2').getContext('2d');//레이더그래프 출력영역 객체 생성
 //myChart 시작
 var datasets_line_bar = [{ //데이터내용 배열 객체 생성
     label: '본인이 좋아하는 색상 설문조사',
@@ -69,6 +68,7 @@ var myChart = new Chart(ctx, {
 <canvas id="myChart2" width="400" height="400"></canvas>
 <script>
 //myChart2 시작
+var ctx2 = document.getElementById('myChart2').getContext('2d');//레이더그래프 출력영역 객체 생성
 var datasets_radar = [{ //데이터내용 배열 객체 생성
     label: '본인이 좋아하는 색상 설문조사',
     data: [jsonData.red,jsonData.blue,jsonData.yellow,jsonData.green,jsonData.purple,jsonData.orange],
