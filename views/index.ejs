@@ -166,7 +166,7 @@
 					url:'/chart/getdata',
 					dataType:'json',
 					success:function(result) {
-						var len = Object.keys(result).length;
+						var len = Object.keys(result).length;//json 객체의 길이 구하기
 						if(len == 0) {
                             console.log("result값은 %j", result);
 							result={"red":0,"blue":0,"yellow":0,"green":0,"purple":0,"orange":0};
