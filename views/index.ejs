@@ -166,11 +166,13 @@
 					url:'/chart/getdata',
 					dataType:'json',
 					success:function(result) {
-						if(result == "") {
+						var len = Object.keys(result).length;
+						if(len == 0) {
+                            console.log("result값은 %j", result);
 							result={"red":0,"blue":0,"yellow":0,"green":0,"purple":0,"orange":0};
 							jsonData = result;
 						}else{
-							//console.log("반환값은 %j" , result[0]);
+							console.log("반환값은 %j" , result[0]);
 							jsonData = result[0];
 						}
 						//페이지 리프레시(재생): 나중에 updateRender() 함수로 분리예정
