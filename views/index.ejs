@@ -148,6 +148,36 @@
 			});
 		</script>
 		<script>
+            var updateRender = function() {
+                    myChart.data.datasets[0].data = jsonData;//결과적으로 json데이터를 만들어야함.
+						myChart.update();//Char.js에 내장된 함수로 그래프를 재생 시킴
+						//두번째 챠트 출력하기-레이더 챠트는 위 막대/라인챠트처럼 jsonData사용불가 배열 데이터로 사용
+						myChart2.data.datasets[0].data = [jsonData.red,jsonData.blue,jsonData.yellow,jsonData.green,jsonData.purple,jsonData.orange];
+						myChart2.update();
+                }
+            var getData = function() {
+                $.ajax({
+                    type:'get',
+                    url:'/chart/getdata',
+                    dataType:'json',
+                    success:function(result) {
+                        var len = Object.keys(result).length;//json 객체의 길이 구하기
+                        if(len == 0) {
+                            result={"red":0,"blue":0,"yellow":0,"green":0,"purple":0,"orange":0};
+                            jsonData = result;
+                        }else{
+                            console.log("반환값은 %j" , result[0]);
+                            jsonData = result[0];
+                        }
+                        //페이지 리프레시(재생): 나중에 
+                        updateRender();// 함수로 분리예정
+
+                    },
+                    error:function(result) {
+                        alert("조회 RestAPI 서버에 문제가 있습니다.");
+                    }
+                });
+            }
 			$('#btnVoteDel').on('click', function () {
 				if (confirm('정말로 초기화 하시겠습니까, 투표한 DB자료가 삭제됩니다.')) {
 					//구현내용
@@ -202,12 +232,8 @@
                     }),
                     dataType:'json',
                     success:function(result) {
-                        //페이지 리프레시(재생): 나중에 updateRender() 함수로 분리예정
-						myChart.data.datasets[0].data = jsonData;//결과적으로 json데이터를 만들어야함.
-						myChart.update();//Char.js에 내장된 함수로 그래프를 재생 시킴
-						//두번째 챠트 출력하기-레이더 챠트는 위 막대/라인챠트처럼 jsonData사용불가 배열 데이터로 사용
-						myChart2.data.datasets[0].data = [jsonData.red,jsonData.blue,jsonData.yellow,jsonData.green,jsonData.purple,jsonData.orange];
-						myChart2.update();
+                        //페이지 리프레시(재생): 나중에 
+                        updateRender();// 함수로 분리예정
                     },
                     error:function(result) {
                         alert("API서버가 작동하지 않습니다. 다음에 이용해 주세요");
@@ -218,30 +244,7 @@
 		<script>
 			$(document).ready(function () {
 				//페이지 로딩시 챠트에 초기 데이터 바인딩 코딩예정. 나중에 getData() 함수로 분리예정
-				$.ajax({
-					type:'get',
-					url:'/chart/getdata',
-					dataType:'json',
-					success:function(result) {
-						var len = Object.keys(result).length;//json 객체의 길이 구하기
-						if(len == 0) {
-							result={"red":0,"blue":0,"yellow":0,"green":0,"purple":0,"orange":0};
-							jsonData = result;
-						}else{
-							console.log("반환값은 %j" , result[0]);
-							jsonData = result[0];
-						}
-						//페이지 리프레시(재생): 나중에 updateRender() 함수로 분리예정
-						myChart.data.datasets[0].data = jsonData;//결과적으로 json데이터를 만들어야함.
-						myChart.update();//Char.js에 내장된 함수로 그래프를 재생 시킴
-						//두번째 챠트 출력하기-레이더 챠트는 위 막대/라인챠트처럼 jsonData사용불가 배열 데이터로 사용
-						myChart2.data.datasets[0].data = [jsonData.red,jsonData.blue,jsonData.yellow,jsonData.green,jsonData.purple,jsonData.orange];
-						myChart2.update();
-					},
-					error:function(result) {
-						alert("조회 RestAPI 서버에 문제가 있습니다.");
-					}
-				});
+				getData();
 				//홈페이지로 이동
 				$('#btnHome').on('click', function () {
 					location.replace('/');
