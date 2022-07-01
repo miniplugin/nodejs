@@ -25,7 +25,7 @@ pool.getConnection(function (err, conn) {
 		if (conn) {
 			conn.release(); // 반드시 해제해야 함
 		}
-		console.log(err); //이 콘솔은 서버 터미널에서 확인가능하다. 크롬 브라우저의 콘솔이 아니다.
+		console.error(err); //이 콘솔은 서버 터미널에서 확인가능하다. 크롬 브라우저의 콘솔이 아니다.
 		return;
 	} else {
 		console.log('데이터베이스 접속에 성공하였습니다.');
@@ -55,8 +55,7 @@ router.route('/chart/getdata').get(function (req, res) {
 				}
 			});
 			conn.on('error', function (err) {
-				console.log('데이터베이스 연결 시 에러 발생함.');
-				console.dir(err);
+				console.error('데이터베이스 연결 시 에러 발생함.' + err.stack);
 				res.end();
 			});
 		});
