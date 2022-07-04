@@ -24,13 +24,45 @@ pool.getConnection(function (err, conn) {
 		if (conn) {
 			conn.release(); // 반드시 해제해야 함
 		}
-		console.error(err); //이 콘솔은 서버 터미널에서 확인가능하다. 크롬 브라우저의 콘솔이 아니다.
+		console.error('데이터 접속 에러' + err); //이 콘솔은 서버 터미널에서 확인가능하다. 크롬 브라우저의 콘솔이 아니다.
 		return;
 	} else {
 		console.log('데이터베이스 접속에 성공하였습니다.');
 	}
 });
 
+// 챠트 데이터 삭제(초기화)하기 라우팅 함수
+router.route('/chart/deldata').post(function (req, res) {
+	console.log('/chart/deldata 호출됨.');
+	if (pool) {
+        // 커넥션 풀에서 연결 객체를 가져옴
+        pool.getConnection(function (err, conn) {
+            console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId);
+            var tablename = 'tbl_chart';
+            var sessionId = "admin";//users 테이블 회원명을 입력한다. 나중에 로그인 기능 추가시 동적값으로…
+            // SQL 문을 실행함 DELETE [테이블] FROM TABLE명 WHERE [조건]
+            var exec = conn.query('delete from ?? where users_id = ?', [tablename,sessionId], function (err, result) {
+                conn.release(); // 반드시 해제해야 함
+                console.log('실행 대상 SQL : ' + exec.sql);
+                if (err) {
+                    console.error('SQL 실행 시 에러 발생함.%j', err.stack);
+                    res.end();
+                    return;
+                }
+                console.log(result);
+                res.end("success");
+            });
+            conn.on('error', function (err) {
+                console.error('데이터베이스 연결 시 에러 발생함. %j', err.stack);
+                res.end();
+            });
+        });
+	} else {
+		// 데이터베이스 객체가 초기화되지 않은 경우 실패 응답 전송
+		console.error('pool 객체가 생성되지 않았습니다. : ' + err.stack);
+		res.end();
+	}
+});
 // 챠트 데이터 저장(수정)하기 라우팅 함수
 router.route('/chart/setdata').post(function (req, res) {
 	console.log('/chart/setdata 호출됨.');
