@@ -147,6 +147,13 @@
 				options: options_radar,
 			});
 		</script>
+        <script src="https://socket-jlpks.run.goorm.io/socket.io/socket.io.js">
+			//노드js에서 발생시킨 소켓io.js를 호출
+		</script>
+		<script>
+			var serverUrl = "https://socket-jlpks.run.goorm.io";
+			var socket = io.connect(serverUrl);//필요시 (serverUrl, socketOptions)
+		</script>
 		<script>
             var updateRender = function() {
                     myChart.data.datasets[0].data = jsonData;//결과적으로 json데이터를 만들어야함.
@@ -189,6 +196,7 @@
                             alert("모든 투표자료가 삭제 되었습니다.");
                             jsonData = {"red":0,"blue":0,"yellow":0,"green":0,"purple":0,"orange":0};//jsonData 초기화
                             updateRender();
+                            socket.emit("OnOff", {msg:'updateRender'});//1:1통신 노드js로 문자를 OnOff 에 담아서 보냄.
                         }
                     },
                     error:function(result) {
@@ -248,6 +256,7 @@
                     success:function(result) {
                         //페이지 리프레시(재생): 나중에 
                         updateRender();// 함수로 분리예정
+                        socket.emit("OnOff", {msg:'updateRender'});//1:1통신 노드js로 문자를 OnOff 에 담아서 보냄.
                     },
                     error:function(result) {
                         alert("API서버가 작동하지 않습니다. 다음에 이용해 주세요");
@@ -257,6 +266,13 @@
 		</script>
 		<script>
 			$(document).ready(function () {
+                socket.on('OnOff', function(jsonMsg){
+                        //msg = JSON.stringify(jsonMsg);//json데이터를 스트링데이터로 변경
+                        console.log(socket.id+"가 받은 메세지는 "+jsonMsg.msg);
+                        if(jsonMsg.msg=="updateRender") {
+                              getData();
+                        }
+                  });
 				//페이지 로딩시 챠트에 초기 데이터 바인딩 코딩예정. 나중에 getData() 함수로 분리예정
 				getData();
 				//홈페이지로 이동
