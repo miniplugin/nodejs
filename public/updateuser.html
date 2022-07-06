@@ -3,11 +3,15 @@
     <head>
         <meta charset="UTF-8">
         <title>사용자 수정 테스트</title>
+        <style>
+            table{border:1px solid black;border-collapse:collapse;width:100%;} 
+            td{border:1px solid black;padding:10px;}
+        </style>
     </head>
     <body>
         <h1>사용자 수정</h1>
         <br>
-        <form method="post" action="/process/updateuser" id="actionform">
+        <form method="post" action="/users/updateuser" id="actionform">
         <table>
             <tr>
                 <td>아이디</td>
@@ -18,7 +22,7 @@
             <tr>
                 <td>사용자명</td>
                 <td>
-                    <input type="text" name="name" value="">
+                    <input type="text" name="name" value="" required>
                 </td>
             </tr>
             <tr>
@@ -47,7 +51,7 @@
             var actionform = document.getElementById('actionform');
             deleteuser.onclick = function() {
                 if(confirm("정말로 회원탈퇴 하시겠습니까?")) {
-                    actionform.setAttribute("action","/process/deleteuser");
+                    actionform.setAttribute("action","/users/deleteuser");
                     actionform.submit();//post방식은 url로 삭제하지 못하고, 반드시 현재폼에서만, 삭제가 가능
                 }
             }
