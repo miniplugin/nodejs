@@ -27,6 +27,88 @@ pool.getConnection(function (err, conn) {
 	}
 });
 
+// 삭제 delete 처리
+router.route('/deleteuser').post(function(req,res) {
+    if(pool) {
+        pool.getConnection(function(err, conn) {
+            var paramId = req.body.id;
+            var exec = conn.query("delete from users where id = ?",paramId,function(err, result) {
+                conn.release();
+                console.log("디버그: 삭제쿼리 확인 " + exec.sql);
+                if(err) {
+                    res.locals.message = err.message;
+                    res.locals.error = err;
+                    res.render('error');//공통 error.ejs 에러페이지 사용
+                }
+                if(result.affectedRows > 0) {
+                    res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
+                    res.write('<script>alert("삭제되었습니다.");location.replace("/users/listuser");</script>');
+                    res.end();
+                }
+            });
+        });
+    }
+});
+
+// 업데이트 update 처리
+router.route('/updateuser').post(function(req,res) {
+    console.log('/users/updateuser post 호출됨');
+    if(pool) {
+        pool.getConnection(function(err, conn) {
+            var paramId = req.body.id;
+            var paramName = req.body.name;
+            var paramAge = req.body.age;
+            var paramPassword = req.body.password;
+            if(paramPassword !="") {
+               paramPassword = crypto.createHash("sha1").update(paramPassword).digest("hex");
+                var updateSet = {name:paramName,age:paramAge,password:paramPassword};
+            }else{
+                var updateSet = {name:paramName,age:paramAge};
+            }
+            var exec = conn.query("update users set ? where id = ?",[updateSet, paramId],function(err, result) {
+                conn.release();
+                console.log("디버그 update결과 : " + result.changedRows);
+                console.log("디버그 update쿼리 : " + exec.sql);
+                if(err) {
+                    res.locals.message = err.message;
+                    res.locals.error = err;
+                    res.render('error');//공통 error.ejs 에러페이지 사용
+                }
+                if(result.changedRows > 0) {
+                    res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
+                    res.write('<script>alert("수정되었습니다.");location.replace("/users/updateuser?id='+paramId+'");</script>');
+                    res.end();
+                }else{
+                    res.send('<script>alert("수정된 값이 없습니다.");location.replace("/users/updateuser?id='+paramId+'");</script>');
+                }
+            });
+        });
+    }
+});
+//업데이트페이지 get
+router.route('/updateuser').get(function(req,res){
+    console.log('/users/updateuser get 호출됨');
+    var paramId = req.query.id;
+    if(pool) {
+        pool.getConnection(function(err, conn) {
+            console.log('데이터베이스 연결 스레드 아이디: '+ conn.threadId);
+            var exec = conn.query("select * from users where id = ?",paramId, function(err, rows){
+                conn.release();
+                console.log('실행 대상 SQL : '+ exec.sql);
+                if(rows.length > 0) {
+                    console.log('사용자 있음');
+                    res.render('users/updateuser', {users:rows[0]});
+                }else{
+                    console.log('사용자 없음.');
+                    res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
+                    res.write('<script>alert("조회된 값이 없습니다.");history.back();</script>');
+                    res.end();
+                }
+            });
+        });    
+    }    
+});
+
 // 리스트사용자페이지
 router.route('/listuser').get(function(req,res){
     console.log('/users/listuser 호출됨');
