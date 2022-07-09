@@ -10,6 +10,26 @@ var users = require('./routes/users');
 
 var app = express();
 
+// Session 미들웨어 불러오기 npm install express-session memorystore
+var session = require('express-session');
+var MemoryStore = require("memorystore")(session);
+//const FileStore = require('session-file-store')(session); //대표적으로 Memory Store, File Store, DB Store 가 있다.
+// 세션 설정
+app.use(session({
+	secret:'my key', //세션을 암호화 해줌
+	resave:false, //세션을 항상 저장할지 여부를 정하는 값
+	saveUninitialized:true, //초기화되지 않은채 스토어에 저장되는 세션
+    store: new MemoryStore({
+            checkPeriod: 86400000, // 24 hours (= 24 * 60 * 60 * 1000 ms)
+        }),
+    cookie: { maxAge: 86400000 },
+}));
+app.use(function(req, res, next) {
+  res.locals.logined = req.session.logined;//ejs에서 사용
+  res.locals.login_id = req.session.login_id;//ejs에서 사용
+  next();
+});
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

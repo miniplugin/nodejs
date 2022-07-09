@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8" />
-		<title>오픈챠트 시작</title>
+		<title><%=login_id%><%=title%>오픈챠트 시작</title>
 		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
 	</head>
@@ -16,11 +16,19 @@
 			<option value="purple">Purple</option>
 			<option value="orange">Orange</option>
 		</select>
+        <% if(logined == true) { %>
 		<button id="btnVote">투표하기</button>
 		<button id="btnVoteDel">초기화하기</button>
+        <% } %>
 		<button id="btnHome">홈페이지로이동</button>
-        <button onclick="location.replace('/users/login');">로그인</button>
-
+        <% if(login_id == 'admin') { %>
+            <input type="button" onclick="location.replace('/users/listuser');" value="회원리스트">
+        <% } %>
+        <% if(logined == true) { %>
+        	<button onclick="location.replace('/users/logout');">로그아웃</button>
+        <% } else { %>
+        	<button onclick="location.replace('/users/login');">로그인</button>
+        <% } %>
 		<script>
 			var btnVote = document.getElementById('btnVote'); //투표하기 버튼객체 생성
 			var selVote = document.getElementById('selVote'); //좋아하는색성 선택객체 생성

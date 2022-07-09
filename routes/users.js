@@ -112,6 +112,9 @@ router.route('/updateuser').get(function(req,res){
 // 리스트사용자페이지
 router.route('/listuser').get(function(req,res){
     console.log('/users/listuser 호출됨');
+    if(req.session.login_id != 'admin') {
+        res.send('<script>alert("관리자만 접근 가능합니다.");window.location="/"</script>');
+    }
     if(pool) {
         pool.getConnection(function(err, conn){
           console.log('데이터베이스 연결 스레드 아이디: '+ conn.threadId);
@@ -185,6 +188,52 @@ router.get('/adduser', function(req, res, next) {
 router.get('/login', function(req, res, next) {
     console.log('/users/login 호출됨.');
     res.render('users/login', { title: '로그인 폼' });
+});
+
+router.get('/logout', function(req, res, next) {
+  req.session.destroy();
+  res.redirect('/');
+});
+
+router.post('/login', function(req, res, next) {
+    console.log('/users/login post 호출됨.');
+    //html에서 넘어온 데이터를 req받아서 처리(아래)
+    var paramId = req.body.id;
+    var paramPassword = req.body.password;
+    if(paramPassword !="") {
+       paramPassword = crypto.createHash("sha1").update(paramPassword).digest("hex");
+    }
+    console.log('요청 파라미터: '+paramId+','+paramPassword);
+    if(pool) {
+        pool.getConnection(function(err, conn){
+            console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId);
+            //SQL 문 실행
+            var exec = conn.query('select count(*) as cnt from users where id=? and password=?', [paramId,paramPassword], function(err, result){
+                conn.release();
+                console.log('SQL구문 확인: '+exec.sql);
+                if(err) {
+                    console.log('로그인 쿼리 에러발생'+err.stack);
+                    res.end();
+                    return;
+                }
+                console.log(result[0]['cnt']);
+                if(result[0]['cnt'] > 0) {
+                    req.session.logined = true;//서버에서 사용
+                    req.session.login_id = paramId;//서버에서 사용
+                    console.log(req.session.user_id);
+                    //res.redirect('/users/listuser');
+                    res.send('<script>alert("로그인 되었습니다.");location.replace("/");</script>');
+                }else{
+                    res.send('<script>alert("로그인이 실패 하였습니다.");location.replace("/users/login")</script>');
+                }                
+            });
+        });
+    }else{
+        //pool이 false일때
+        res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
+        res.write('<h2>데이터베이스 연결 실패.</h2>');
+        res.end();
+    }
 });
 
 module.exports = router;

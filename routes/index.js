@@ -3,7 +3,11 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+    //if(req.session.logined) {
+  		res.render('index', { title: req.session.login_id });//매 화면별 세션값을 보내는 것을 좋지 않다. 그래서, app.js에 공통 세션값 전송하는 코드 추가
+    //}else{
+    //    res.redirect('/users/login');
+    //}
 });
 
 //===== MySQL 데이터베이스를 사용할 수 있도록 하는 mysql 모듈 불러오기 =====//
@@ -39,7 +43,7 @@ router.route('/chart/deldata').post(function (req, res) {
         pool.getConnection(function (err, conn) {
             console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId);
             var tablename = 'tbl_chart';
-            var sessionId = "admin";//users 테이블 회원명을 입력한다. 나중에 로그인 기능 추가시 동적값으로…
+            var sessionId = req.session.login_id;//users 테이블 회원명을 입력한다. 나중에 로그인 기능 추가시 동적값으로…
             // SQL 문을 실행함 DELETE [테이블] FROM TABLE명 WHERE [조건]
             var exec = conn.query('delete from ?? where users_id = ?', [tablename,sessionId], function (err, result) {
                 conn.release(); // 반드시 해제해야 함
@@ -75,7 +79,7 @@ router.route('/chart/setdata').post(function (req, res) {
 	console.log('요청 파라미터 : ' +paramRed +', ' +paramBlue +', ' +paramYellow +', ' +paramGreen +', ' +paramPurple +', ' +paramOrange);
 	var data = [paramRed, paramBlue, paramYellow, paramGreen, paramPurple, paramOrange];
     var toNumbers = arr => arr.map(Number);//문자열 배열을 숫자형 변경하는 코드(=> 람다식이라고 하고, 반환값 => 구현내용으로 구성)
-    var sessionId = "admin";//users 테이블 회원명을 입력한다. 나중에 로그인 기능 추가시 동적값으로…
+    var sessionId = req.session.login_id;//users 테이블 회원명을 입력한다. 나중에 로그인 기능 추가시 동적값으로…
     // pool 객체가 초기화된 경우, setData 함수생성예정
 	if (pool) {
 		// 커넥션 풀에서 연결 객체를 가져옴
