@@ -216,9 +216,12 @@
 				}
 			});
 			btnVote.onclick = function () {
+				var selVote = document.getElementById("selVote");//프로시저 사용 추가
+				var selectColor = selVote.options[selVote.selectedIndex].text;//프로시저 사용 추가
 				var voteIdx = document.getElementById('selVote').options.selectedIndex;
 				//alert(voteIdx);
                 //투표버튼을 클릭했을때 해당 버튼의 값만 +1 하는 스위치문
+				/* 프로시저를 사용하면 샐략
                 var red=0, blue=0, yellow=0, green=0, purple=0, orange=0;
                 switch(voteIdx) {
                 case 0:
@@ -247,6 +250,7 @@
                     break;
                 }
                 console.log("여기 %j", jsonData);
+				*/
                 $.ajax({
                     type:'post',
                     url:'/chart/setdata',
@@ -254,6 +258,7 @@
                         "Content-Type":"application/json",
                         "X-HTTP-Method-Override":"POST"
                     },
+					/* 프로시저를 사용하면 생략
                     data:JSON.stringify({//json데이터를 post전송할 text로 변경.
                         "red":red,
                         "blue":blue,
@@ -262,10 +267,15 @@
                         "purple":purple,
                         "orange":orange
                     }),
+					*/
+					data:JSON.stringify({//프로시저 사용 추가
+                        "selectColor":selectColor
+                    }),
                     dataType:'json',
                     success:function(result) {
                         //페이지 리프레시(재생): 나중에 
-                        updateRender();// 함수로 분리예정
+                        //updateRender();//프로시저 사용으로 생략
+						getData();//프로시저 사용 추가
                         socket.emit("OnOff", {msg:'updateRender'});//1:1통신 노드js로 문자를 OnOff 에 담아서 보냄.
                     },
                     error:function(result) {

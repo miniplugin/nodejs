@@ -200,15 +200,18 @@ router.post('/login', function(req, res, next) {
     //html에서 넘어온 데이터를 req받아서 처리(아래)
     var paramId = req.body.id;
     var paramPassword = req.body.password;
+	/* 프로시저를 사용하면 샐략
     if(paramPassword !="") {
        paramPassword = crypto.createHash("sha1").update(paramPassword).digest("hex");
     }
+	*/
     console.log('요청 파라미터: '+paramId+','+paramPassword);
     if(pool) {
         pool.getConnection(function(err, conn){
             console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId);
-            //SQL 문 실행
-            var exec = conn.query('select count(*) as cnt from users where id=? and password=?', [paramId,paramPassword], function(err, result){
+            //SQL 문 실행 프로시저를 사용하면 샐략(아래)
+            //var exec = conn.query('select count(*) as cnt from users where id=? and password=?', [paramId,paramPassword], function(err, result){
+			var exec = conn.query('select FN_auth(?,?) as cnt', [paramId,paramPassword], function(err, result){ //함수 사용 추가
                 conn.release();
                 console.log('SQL구문 확인: '+exec.sql);
                 if(err) {

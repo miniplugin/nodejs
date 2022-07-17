@@ -70,6 +70,7 @@ router.route('/chart/deldata').post(function (req, res) {
 // 챠트 데이터 저장(수정)하기 라우팅 함수
 router.route('/chart/setdata').post(function (req, res) {
 	console.log('/chart/setdata 호출됨.');
+	/* 프로시저를 사용하면 샐략
 	var paramRed = req.body.red;
 	var paramBlue = req.body.blue;
 	var paramYellow = req.body.yellow;
@@ -79,6 +80,8 @@ router.route('/chart/setdata').post(function (req, res) {
 	console.log('요청 파라미터 : ' +paramRed +', ' +paramBlue +', ' +paramYellow +', ' +paramGreen +', ' +paramPurple +', ' +paramOrange);
 	var data = [paramRed, paramBlue, paramYellow, paramGreen, paramPurple, paramOrange];
     var toNumbers = arr => arr.map(Number);//문자열 배열을 숫자형 변경하는 코드(=> 람다식이라고 하고, 반환값 => 구현내용으로 구성)
+	*/
+	var selectColor = req.body.selectColor;//프로시저 사용 추가
     var sessionId = req.session.login_id;//users 테이블 회원명을 입력한다. 나중에 로그인 기능 추가시 동적값으로…
     // pool 객체가 초기화된 경우, setData 함수생성예정
 	if (pool) {
@@ -88,7 +91,8 @@ router.route('/chart/setdata').post(function (req, res) {
             var columns = ['red', 'blue', 'yellow', 'green', 'purple', 'orange', 'users_id'];
 			var tablename = 'tbl_chart';
             // SQL 문을 실행함 INSERT INTO [테이블] (필드명) VALUES (?,?,?,?,?,?,?)
-            var exec = conn.query('insert into ?? (??) values (?,?)', [tablename, columns, toNumbers(data), sessionId], function (err, result) {
+            //var exec = conn.query('insert into ?? (??) values (?,?)', [tablename, columns, toNumbers(data), sessionId], function (err, result) {
+			var exec = conn.query('CALL insert_chart(?,?, @msg);', [sessionId,selectColor], function (err, result) {
                 conn.release(); // 반드시 해제해야 함
                 console.log('실행 대상 SQL : ' + exec.sql);
                 if (err) {
