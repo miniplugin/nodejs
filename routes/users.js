@@ -112,25 +112,40 @@ router.route('/updateuser').get(function(req,res){
 // 리스트사용자페이지
 router.route('/listuser').get(function(req,res){
     console.log('/users/listuser 호출됨');
+	var page = req.query.page || 1; //현재 페이지 없으면 기본값 1
+	var perPage = 5; //1페이지당 보여줄 개수
+	var totalPage = 0;//전체 페이지
+	//아래 3개는 하단 페이지내비 때문에 추가
+	var perPageNavi = 10; //하단 페이지네비 개수
+	var startPage = ((page-1)/perPageNavi)*perPageNavi+1;//하단 페이지네비의 시작 페이지
+	var endPage = startPage + perPageNavi -1;//하단 페이지네비의 끝 페이지
     if(req.session.login_id != 'admin') {
         res.send('<script>alert("관리자만 접근 가능합니다.");window.location="/"</script>');
     }
     if(pool) {
         pool.getConnection(function(err, conn){
           console.log('데이터베이스 연결 스레드 아이디: '+ conn.threadId);
-          var columns = ['id','name','age'];
-          var tablename = 'users';
+          //var columns = ['id','name','age'];
+          //var tablename = 'users';
           //SQL문을 실행 preparedStatement 미리정의된 SQL문
-          var exec = conn.query("select ?? from ??",[columns,tablename],function(err,rows){
-            conn.release();//연결해제.
-            console.log('실행 대상 SQL : '+ exec.sql);
-            if(rows.length > 0) {
-                console.log('사용자 리스트 있음');
-                res.render('users/listuser', {userList:rows});
-            }else{
-                console.log('사용자 리스트 없음.');
-                res.render('users/listuser', {userList:rows});
-            }
+          //var exec = conn.query("select ?? from ??",[columns,tablename],function(err,rows){ 프로시저 사용으로 생략
+			var exec = conn.query("CALL PROC_paging(?,?,@O_cnt)",[page,perPage],function(err,rows){
+                conn.query('SELECT @O_cnt AS pageCnt',function(err,rows2){
+					console.log('사용자 리스트 페이징번호:' + rows2[0]['pageCnt']);
+					totalPage = rows2[0]['pageCnt'];
+					if(endPage > totalPage) {
+						endPage = totalPage;
+					}
+					conn.release();//연결해제.
+					console.log('실행 대상 SQL : '+ exec.sql);
+					if(rows.length > 0) {
+						console.log('사용자 리스트 있음 %j', rows);
+						res.render('users/listuser', {userList:rows[0], totalPage:totalPage, currentPage:page, perPage:perPage, perPageNavi:perPageNavi, startPage:startPage,endPage:endPage});
+					}else{
+						console.log('사용자 리스트 없음.');
+						res.render('users/listuser', {userList:rows[0]});
+					}
+				});
           });
         });
     }else{

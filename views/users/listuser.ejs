@@ -21,17 +21,44 @@
                 <% if(userList !=null && userList.length > 0) { %>
                       <% for(var i=0; i<userList.length; i++) { %>
                       <tr>
-                            <td><%=i%></td>
+                            <td><%=totalPage*perPage-(i+(currentPage-1)*perPage)%></td>
                             <td><a href="/users/updateuser?id=<%=userList[i].id%>"><%=userList[i].id%></a></td>
                             <td><%=userList[i].name%></td>
                             <td><%=userList[i].age%></td>
                       </tr>
-                <% } %>
+                	<% } %>
                 <% }else{ %>
                       <tr>
                             <td colspan="4">조회된 데이터가 없습니다!!!</td>
                       </tr>
                 <% } %>
             </table>
+			<div style="text-align:center;padding:10px;">
+			<% if(startPage>1) { %>
+				<span><a href="/users/listuser?page=1">[처음}</a></span>
+			<% } %>
+			<% if(currentPage>1) { %>
+				<span><a href="/users/listuser?page=<%=currentPage-1%>">[이전}</a></span>
+			<% } %>
+			<% for(var i=startPage; i<=endPage; i++) { %>
+				<% if(i==currentPage) { %>
+					<span><strong><a href="/users/listuser?page=<%=i%>"><%=i%></a></strong></span>
+				<% }else{ %>
+					<span><a href="/users/listuser?page=<%=i%>"><%=i%></a></span>	
+				<% } %>
+			<% } %>
+			<% if(currentPage<totalPage) { %>
+				<span><a href="/users/listuser?page=<%=parseInt(currentPage)+1%>">[다음}</a></span>
+			<% } %>
+			<% if(endPage<totalPage) { %>
+				<span><a href="/users/listuser?page=<%=totalPage%>">[끝}</a></span>
+			<% } %>
+			</div>
+		<!-- 토탈페이지 변수를 사용할 경우 하단 페이지 네비가 넘치는 경우가 생긴다 그래서 위 처럼 적용한다. -->
+			<div style="text-align:center;padding:10px;">
+			<% for(var i=0; i<totalPage; i++) { %>
+				<span><a href="/users/listuser?page=<%=i+1%>"><%=i+1%></a></span>	
+			<% } %>
+			</div>
     </body>
 </html>
