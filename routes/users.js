@@ -112,9 +112,11 @@ router.route('/updateuser').get(function(req,res){
 // 리스트사용자페이지
 router.route('/listuser').get(function(req,res){
     console.log('/users/listuser 호출됨');
+	var keyword = req.query.keyword || ''; //현재 검색어가 없으면 기본값''
 	var page = req.query.page || 1; //현재 페이지 없으면 기본값 1
 	var perPage = 5; //1페이지당 보여줄 개수
 	var totalPage = 0;//전체 페이지
+	var totalCnt = 0;//전회 회원 수
 	//아래 3개는 하단 페이지내비 때문에 추가
 	var perPageNavi = 10; //하단 페이지네비 개수
 	var startPage = ((page-1)/perPageNavi)*perPageNavi+1;//하단 페이지네비의 시작 페이지
@@ -129,10 +131,11 @@ router.route('/listuser').get(function(req,res){
           //var tablename = 'users';
           //SQL문을 실행 preparedStatement 미리정의된 SQL문
           //var exec = conn.query("select ?? from ??",[columns,tablename],function(err,rows){ 프로시저 사용으로 생략
-			var exec = conn.query("CALL PROC_paging(?,?,@O_cnt)",[page,perPage],function(err,rows){
-                conn.query('SELECT @O_cnt AS pageCnt',function(err,rows2){
+			var exec = conn.query("CALL PROC_search(?,?,?,@O_cnt)",[page,perPage,keyword],function(err,rows){
+                conn.query('SELECT @O_cnt AS totalCnt',function(err,rows2){
 					console.log('사용자 리스트 페이징번호:' + rows2[0]['pageCnt']);
-					totalPage = rows2[0]['pageCnt'];
+					totalCnt = rows2[0]['totalCnt'];
+					totalPage = Math.ceil(totalCnt/perPage);//Math.ceil(올림),Math.floor(내림),Math.round(반올림)
 					if(endPage > totalPage) {
 						endPage = totalPage;
 					}
@@ -140,7 +143,7 @@ router.route('/listuser').get(function(req,res){
 					console.log('실행 대상 SQL : '+ exec.sql);
 					if(rows.length > 0) {
 						console.log('사용자 리스트 있음 %j', rows);
-						res.render('users/listuser', {userList:rows[0], totalPage:totalPage, currentPage:page, perPage:perPage, perPageNavi:perPageNavi, startPage:startPage,endPage:endPage});
+						res.render('users/listuser', {userList:rows[0], totalPage:totalPage, currentPage:page, perPage:perPage, perPageNavi:perPageNavi, startPage:startPage,endPage:endPage,totalCnt:totalCnt,keyword:keyword});
 					}else{
 						console.log('사용자 리스트 없음.');
 						res.render('users/listuser', {userList:rows[0]});
