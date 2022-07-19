@@ -21,7 +21,7 @@
                 <% if(userList !=null && userList.length > 0) { %>
                       <% for(var i=0; i<userList.length; i++) { %>
                       <tr>
-                            <td><%=totalPage*perPage-(i+(currentPage-1)*perPage)%></td>
+                            <td><%=totalCnt-(i+(currentPage-1)*perPage)%></td>
                             <td><a href="/users/updateuser?id=<%=userList[i].id%>"><%=userList[i].id%></a></td>
                             <td><%=userList[i].name%></td>
                             <td><%=userList[i].age%></td>
