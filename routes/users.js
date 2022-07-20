@@ -131,10 +131,10 @@ router.route('/listuser').get(function(req,res){
           //var tablename = 'users';
           //SQL문을 실행 preparedStatement 미리정의된 SQL문
           //var exec = conn.query("select ?? from ??",[columns,tablename],function(err,rows){ 프로시저 사용으로 생략
-			var exec = conn.query("CALL PROC_search(?,?,?,@O_cnt)",[page,perPage,keyword],function(err,rows){
-                conn.query('SELECT @O_cnt AS totalCnt',function(err,rows2){
-					console.log('사용자 전체 개수:' + rows2[0]['totalCnt']);
-					totalCnt = rows2[0]['totalCnt'];
+			var exec = conn.query("CALL PROC_search_rs(?,?,?,@O_cnt)",[page,perPage,keyword],function(err,rows){
+                //conn.query('SELECT @O_cnt AS totalCnt',function(err,rows2){
+					//console.log('사용자 전체 개수:' + rows2[0]['totalCnt']);
+					totalCnt = rows[0][0]['totalCnt'];
 					totalPage = Math.ceil(totalCnt/perPage);//Math.ceil(올림),Math.floor(내림),Math.round(반올림)
 					if(endPage > totalPage) {
 						endPage = totalPage;
@@ -148,7 +148,7 @@ router.route('/listuser').get(function(req,res){
 						console.log('사용자 리스트 없음.');
 						res.render('users/listuser', {userList:rows[0]});
 					}
-				});
+				//});
           });
         });
     }else{
