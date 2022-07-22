@@ -17,7 +17,7 @@ database.db.on('error', console.error.bind(console, 'mongoose connection error.'
 database.db.on('open', function () {
 	console.log('몽고DB에 연결되었습니다. : ' + config.db_url);
 	// config에 등록된 스키마 및 모델 객체 생성
-	var usersSchema = require(config.db_schemas[0].file).createSchema(mongoose);// 모듈 파일에서 모듈 불러온 후 createSchema() 함수 호출하기
+	var usersSchema = require(config.db_schemas[0].file).createSchema(mongoose);// 모듈 파일 불러온 후 createSchema() 함수 호출하기
 	console.log('[%s] 모듈을 불러들인 후 스키마 정의함.', config.db_schemas[0].file);
 	var usersModel = mongoose.model(config.db_schemas[0].collection, usersSchema);// users 컬렉션 모델 정의
 	console.log('[%s] 컬렉션을 위해 모델 정의함.', config.db_schemas[0].collection);
@@ -39,7 +39,7 @@ database.db.on('open', function () {
 	for(var i=1;i<=99;i++) {
 		dummyUsers.push({id: "user"+i, name: "사용자"+i, age: i, password: password}); //dummyUsers끝에 해당 요소 추가 
 	}
-	/* 참고: 옹구스에서 사용하는 함수 기본 형식 */
+	/* 참고: 몽구스에서 사용하는 함수 기본 형식 */
 	query = { "id":"admin" },
 	update = {
 		"$set": {"age":0} 
@@ -52,7 +52,7 @@ database.db.on('open', function () {
 		}
     });	
 	
-	// UserModel 인스턴스 생성
+	// 배열 내용을 forEach 반복구문으로 구하기
 	dummyUsers.forEach(function(item){ //,index,arr2
 		console.log(item["id"]);
 		database.UserModel.find({"id":item["id"]}, function(err, results) {
@@ -63,7 +63,7 @@ database.db.on('open', function () {
 			if (results.length > 0) {
 				console.log('아이디와 일치하는 사용자 찾음.');
 			}else{
-				var users = new database.UserModel(item);
+				var users = new database.UserModel(item);// UserModel 인스턴스 생성
 				// save()로 저장
 				users.save(function(err) {
 					if (err) {
