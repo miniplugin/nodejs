@@ -39,6 +39,19 @@ database.db.on('open', function () {
 	for(var i=1;i<=99;i++) {
 		dummyUsers.push({id: "user"+i, name: "사용자"+i, age: i, password: password}); //dummyUsers끝에 해당 요소 추가 
 	}
+	/* 참고: 옹구스에서 사용하는 함수 기본 형식 */
+	query = { "id":"admin" },
+	update = {
+		"$set": {"age":0} 
+	},
+	options = { "multi": true };
+    database.UserModel.updateOne(query, update, options, function (err) {
+        if (err) {
+			console.error(err);
+			return;
+		}
+    });	
+	
 	// UserModel 인스턴스 생성
 	dummyUsers.forEach(function(item){ //,index,arr2
 		console.log(item["id"]);
@@ -49,9 +62,6 @@ database.db.on('open', function () {
 			}
 			if (results.length > 0) {
 				console.log('아이디와 일치하는 사용자 찾음.');
-				database.UserModel.updateOne({"id":"admin"}, {$set:{"age":0}});
-				database.UserModel.updateOne({"id":"user1"}, {$set:{"age":1}});
-				database.UserModel.updateOne({"id":"user2"}, {$set:{"age":2}});
 			}else{
 				var users = new database.UserModel(item);
 				// save()로 저장
