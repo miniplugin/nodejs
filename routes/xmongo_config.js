@@ -3,7 +3,7 @@
  */
 
 module.exports = {
-	db_url: 'mongodb://localhost/local',
+	db_url: 'mongodb://root:apmsetup@127.0.0.1:27017/student',
 	db_schemas: [
 	    {file:'./xmongo_collections', collection:'users', schemaName:'UserSchema', modelName:'UserModel'}
 	]
