@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>사용자 리스트 화면</title>
+        <style>
+            table{border:1px solid black;border-collapse:collapse;width:100%;} 
+            td{border:1px solid black;padding:10px;}
+        </style>
+    </head>
+    <body>
+        <h1>사용자 리스트</h1>
+        <input type="button" onclick="location.href='/xmongo_users/adduser';" value="회원등록">
+        <input type="button" onclick="location.href='/xmongo_users/logout';" value="로그아웃">
+        <input type="button" onclick="location.href='/';" value="홈으로">
+		<form name="serch_form" action="/xmongo_users/listuser" method="get">
+			<span>회원id검색</span>
+			<input type="text" name="keyword" value="<%=keyword%>">
+			<input type="submit" value="검색">
+		</form>
+        <br>
+            <table>
+                <tr>
+                    <td>번호</td><td>아이디</td><td>이름</td><td>나이</td>
+                </tr>
+                <% if(userList !=null && userList.length > 0) { %>
+                      <% for(var i=0; i<userList.length; i++) { %>
+                      <tr>
+                            <td><%=totalCnt-(i+(currentPage-1)*perPage)%></td>
+                            <td><a href="/xmongo_users/updateuser?id=<%=userList[i].id%>"><%=userList[i].id%></a></td>
+                            <td><%=userList[i].name%></td>
+                            <td><%=userList[i].age%></td>
+                      </tr>
+                	<% } %>
+                <% }else{ %>
+                      <tr>
+                            <td colspan="4">조회된 데이터가 없습니다!!!</td>
+                      </tr>
+                <% } %>
+            </table>
+			<div style="text-align:center;padding:10px;">
+			<% if(startPage>1) { %>
+				<span><a href="/xmongo_users/listuser?page=1&keyword=<%=keyword%>">[처음}</a></span>
+			<% } %>
+			<% if(currentPage>1) { %>
+				<span><a href="/xmongo_users/listuser?page=<%=currentPage-1%>&keyword=<%=keyword%>">[이전}</a></span>
+			<% } %>
+			<% for(var i=startPage; i<=endPage; i++) { %>
+				<% if(i==currentPage) { %>
+					<span><strong><a href="/xmongo_users/listuser?page=<%=i%>&keyword=<%=keyword%>"><%=i%></a></strong></span>
+				<% }else{ %>
+					<span><a href="/xmongo_users/listuser?page=<%=i%>&keyword=<%=keyword%>"><%=i%></a></span>	
+				<% } %>
+			<% } %>
+			<% if(currentPage<totalPage) { %>
+				<span><a href="/xmongo_users/listuser?page=<%=parseInt(currentPage)+1%>&keyword=<%=keyword%>">[다음}</a></span>
+			<% } %>
+			<% if(endPage<totalPage) { %>
+				<span><a href="/xmongo_users/listuser?page=<%=totalPage%>&keyword=<%=keyword%>">[끝}</a></span>
+			<% } %>
+			</div>
+		<!-- 토탈페이지 변수를 사용할 경우 하단 페이지 네비가 넘치는 경우가 생긴다 그래서 위 처럼 적용한다. -->
+			<div style="text-align:center;padding:10px;">
+			<% for(var i=0; i<totalPage; i++) { %>
+				<span><a href="/xmongo_users/listuser?page=<%=i+1%>&keyword=<%=keyword%>"><%=i+1%></a></span>	
+			<% } %>
+			</div>
+    </body>
+</html>

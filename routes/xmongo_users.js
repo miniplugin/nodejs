@@ -81,4 +81,58 @@ database.db.on('disconnected', function() {
 	database.db = mongoose.connection;
 });
 
+// 리스트사용자페이지
+router.route('/listuser').get(async function(req,res){ 
+	//async 로 실행하면 Promise 반환 결과를 약속하게 된다. 즉, await 로 반환값을 약속 받을 수 있다. 실행 순서가 중요할 때 사용.
+    console.log('/xmongo_users/listuser 호출됨');
+	var keyword = req.query.keyword || ''; //현재 검색어가 없으면 기본값''
+	var page = req.query.page || 1; //현재 페이지 없으면 기본값 1
+	var perPage = 5; //1페이지당 보여줄 개수
+	var totalPage = 0;//전체 페이지 초기값
+	var totalCnt = 0;//전회 회원 수 초기값
+	//아래 3개는 하단 페이지내비 때문에 추가
+	var perPageNavi = 10; //하단 페이지네비 개수
+	var startPage = ((page-1)/perPageNavi)*perPageNavi+1;//하단 페이지네비의 시작 페이지
+	var endPage = startPage + perPageNavi -1;//하단 페이지네비의 끝 페이지
+    //if(req.session.login_id != 'admin') {
+    //    res.send('<script>alert("관리자만 접근 가능합니다.");window.location="/"</script>');
+    //}
+    if(database.db) {
+		query = {id: { $regex: '.*'+keyword+'.*' }},
+		project = {},
+		options = { sort:{age: 1}, skip:(page-1)*perPage, limit:perPage };
+		//db.users.find({id: { $regex: '.*user.*' } }).sort({age:1}).skip(0).limit(5); //Compass 에서 사용하는 함수
+		//database.UserModel.find({id: { $regex: '.*'+keyword+'.*' } }).count().exec(function(err,rows2){
+		await database.UserModel.find(query,project).count().exec(function(err,rows2){
+			totalCnt = rows2;
+			console.log('사용자 전체 개수1: ' + rows2);
+		});
+		//database.UserModel.find({id: { $regex: '.*'+keyword+'.*' } }).sort({age:1}).skip((page-1)*perPage).limit(perPage).exec(function(err, rows) {
+		database.UserModel.find(query,project,options, function(err, rows) {
+			if(err) {
+				res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
+				res.write('<h2>사용자 조회 함수 실패.</h2>');
+				res.write('<p>' + err.stack + '</p>');
+				res.end();
+			}
+			console.log('사용자 전체 개수2: ' + totalCnt);
+			totalPage = Math.ceil(totalCnt/perPage);//Math.ceil(올림),Math.floor(내림),Math.round(반올림)
+			if(endPage > totalPage) {
+				endPage = totalPage;
+			}
+			if(rows.length > 0) {
+				console.log('사용자 리스트 있음 %j', rows);
+				res.render('xmongo_users/listuser', {userList:rows, totalPage:totalPage, currentPage:page, perPage:perPage, perPageNavi:perPageNavi, startPage:startPage,endPage:endPage,totalCnt:totalCnt,keyword:keyword});
+			}else{
+				console.log('사용자 리스트 없음.');
+				res.render('xmongo_users/listuser', {userList:rows, totalPage:totalPage, currentPage:page, perPage:perPage, perPageNavi:perPageNavi, startPage:startPage,endPage:endPage,totalCnt:totalCnt,keyword:keyword});
+			}
+	  });
+    }else{
+        res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
+        res.write('<h2>데이터베이스 연결 실패.</h2>');
+        res.end();
+    }
+});
+
 module.exports = router;
