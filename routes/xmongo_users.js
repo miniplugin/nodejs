@@ -105,7 +105,7 @@ router.route('/updateuser').get(function(req,res){
 });
 
 // 사용자 등록 라우터의 route함수 사용(next 매개변수가 없다.)
-router.route('/adduser').post(function(req,res){
+router.route('/adduser').post(async function(req,res){ // 내부에 2개의 쿼리가 있기 때문에 async 로 오동작방지
     console.log('/xmongo_users/adduser 호출된.');
     //html에서 넘어온 데이터를 req받아서 처리(아래)
     var paramId = req.body.id;
@@ -117,26 +117,29 @@ router.route('/adduser').post(function(req,res){
     }
     console.log('요청 파라미터: '+paramId+','+paramPassword+','+paramName+','+paramAge);
     if(database.db) {
-		database.UserModel.find({"id":paramId}, function(err, results) {
+		var nextWork = await database.UserModel.find({"id":paramId}, function(err, results) {
 			if (results.length > 0) {
 				res.send('<script>alert("일치하는 사용자가 있습니다..");history.go(-1); </script>');
 				res.end();
 				return;
 			}
-		});
-		var data = {id:paramId,name:paramName,age:paramAge,password:paramPassword};//json데이터타입의 객체(배열, 키:밸류)
-		//SQL 문 실행
-		var users = new database.UserModel(data);// UserModel 인스턴스 생성
-		// save()로 저장
-		users.save(function(err) {
-			if (err) {
-				console.log(err);
-				res.end();
-				return;
-			}
-			console.log("사용자 데이터 추가함.");
-			res.send('<script>alert("등록 되었습니다.");window.location="/xmongo_users/listuser"</script>');
-		});
+		}).clone(); //1번 실행 시키고 쿼리를 종료한다.
+		console.log(nextWork.length);
+		if(nextWork.length<1) {
+			var data = {id:paramId,name:paramName,age:paramAge,password:paramPassword};//json데이터타입의 객체(배열, 키:밸류)
+			//SQL 문 실행
+			var users = new database.UserModel(data);// UserModel 인스턴스 생성
+			// save()로 저장
+			users.save(function(err) {
+				if (err) {
+					console.log(err);
+					res.end();
+					return;
+				}
+				console.log("사용자 데이터 추가함.");
+				res.send('<script>alert("등록 되었습니다.");window.location="/xmongo_users/listuser"</script>');
+			});
+		}
     }else{
         //pool이 false일때
         res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
@@ -172,10 +175,10 @@ router.route('/listuser').get(async function(req,res){
 		options = { sort:{age: 1}, skip:(page-1)*perPage, limit:perPage };
 		//db.users.find({id: { $regex: '.*user.*' } }).sort({age:1}).skip(0).limit(5); //Compass 에서 사용하는 함수
 		//database.UserModel.find({id: { $regex: '.*'+keyword+'.*' } }).count().exec(function(err,rows2){
-		await database.UserModel.find(query,project).count().exec(function(err,rows2){
+		await database.UserModel.find(query,project).count(function(err,rows2){
 			totalCnt = rows2;
 			console.log('사용자 전체 개수1: ' + rows2);
-		});
+		}).clone();//await 함수의 쿼리를 실행 후 종료한다.
 		//database.UserModel.find({id: { $regex: '.*'+keyword+'.*' } }).sort({age:1}).skip((page-1)*perPage).limit(perPage).exec(function(err, rows) {
 		database.UserModel.find(query,project,options, function(err, rows) {
 			if(err) {
