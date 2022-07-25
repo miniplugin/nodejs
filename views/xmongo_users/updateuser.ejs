@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>사용자 수정 테스트</title>
+        <style>
+            table{border:1px solid black;border-collapse:collapse;width:100%;} 
+            td{border:1px solid black;padding:10px;}
+        </style>
+    </head>
+    <body>
+        <h1>사용자 수정</h1>
+        <br>
+        <form method="post" action="/xmongo_users/updateuser" id="actionform">
+        <table>
+            <tr>
+                <td>아이디</td>
+                <td>
+                    <input type="text" name="id" value="<%=users.id%>" readonly>
+                </td>
+            </tr>
+            <tr>
+                <td>사용자명</td>
+                <td>
+                    <input type="text" name="name" value="<%=users.name%>" required>
+                </td>
+            </tr>
+            <tr>
+                <td>나이</td>
+                <td>
+                    <input type="text" name="age" value="<%=users.age%>">
+                </td>
+            </tr>
+            <tr>
+                <td>암호</td>
+                <td>
+                    <input type="password" name="password" value="">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="수정">
+                    <input type="button" value="회원탈퇴" id="deleteuser">
+                    <input type="button" value="리스트" onclick="location.replace('/xmongo_users/listuser')">
+                </td>
+            </tr>
+        </table>
+        </form>
+        <script>
+            var deleteuser = document.getElementById('deleteuser');
+            var actionform = document.getElementById('actionform');
+            deleteuser.onclick = function() {
+                if(confirm("정말로 회원탈퇴 하시겠습니까?")) {
+                    actionform.setAttribute("action","/xmongo_users/deleteuser");
+                    actionform.submit();//post방식은 url로 삭제하지 못하고, 반드시 현재폼에서만, 삭제가 가능
+                }
+            }
+        </script>
+    </body>
+</html>

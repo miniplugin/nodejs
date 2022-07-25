@@ -81,6 +81,75 @@ database.db.on('disconnected', function() {
 	database.db = mongoose.connection;
 });
 
+//업데이트페이지 get
+router.route('/updateuser').get(function(req,res){
+    console.log('/xmongo_users/updateuser get 호출됨');
+    var paramId = req.query.id;
+    if(database.db) {
+		query = {id: paramId},
+		project = {};
+		//db.users.find({id: { $regex: '.*user.*' } }).sort({age:1}).skip(0).limit(5); //Compass 에서 사용하는 함수
+		//database.UserModel.find({id: { $regex: '.*'+keyword+'.*' } }).count().exec(function(err,rows2){
+		database.UserModel.find(query, project, function(err,rows){
+			if(rows.length > 0) {
+				console.log('사용자 있음');
+				res.render('xmongo_users/updateuser', {users:rows[0]});
+			}else{
+				console.log('사용자 없음.');
+				res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
+				res.write('<script>alert("조회된 값이 없습니다.");history.back();</script>');
+				res.end();
+			}
+		});
+    }    
+});
+
+// 사용자 등록 라우터의 route함수 사용(next 매개변수가 없다.)
+router.route('/adduser').post(function(req,res){
+    console.log('/xmongo_users/adduser 호출된.');
+    //html에서 넘어온 데이터를 req받아서 처리(아래)
+    var paramId = req.body.id;
+    var paramPassword = req.body.password;
+    var paramName = req.body.name;
+    var paramAge = req.body.age;
+    if(paramPassword !="") {
+       paramPassword = crypto.createHash("sha1").update(paramPassword).digest("hex");
+    }
+    console.log('요청 파라미터: '+paramId+','+paramPassword+','+paramName+','+paramAge);
+    if(database.db) {
+		database.UserModel.find({"id":paramId}, function(err, results) {
+			if (results.length > 0) {
+				res.send('<script>alert("일치하는 사용자가 있습니다..");history.go(-1); </script>');
+				res.end();
+				return;
+			}
+		});
+		var data = {id:paramId,name:paramName,age:paramAge,password:paramPassword};//json데이터타입의 객체(배열, 키:밸류)
+		//SQL 문 실행
+		var users = new database.UserModel(data);// UserModel 인스턴스 생성
+		// save()로 저장
+		users.save(function(err) {
+			if (err) {
+				console.log(err);
+				res.end();
+				return;
+			}
+			console.log("사용자 데이터 추가함.");
+			res.send('<script>alert("등록 되었습니다.");window.location="/xmongo_users/listuser"</script>');
+		});
+    }else{
+        //pool이 false일때
+        res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
+        res.write('<h2>데이터베이스 연결 실패.</h2>');
+        res.end();
+    }
+});
+// 사용자등록 매핑 아래 url은 app.js의 app.use('/xmongo_users',모듈객체 명);의 영향을 받는다
+router.get('/adduser', function(req, res, next) {
+    console.log('/xmongo_users/adduser 호출됨.');
+    res.render('xmongo_users/adduser');
+});
+
 // 리스트사용자페이지
 router.route('/listuser').get(async function(req,res){ 
 	//async 로 실행하면 Promise 반환 결과를 약속하게 된다. 즉, await 로 반환값을 약속 받을 수 있다. 실행 순서가 중요할 때 사용.
