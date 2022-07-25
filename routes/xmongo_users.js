@@ -125,11 +125,11 @@ router.route('/adduser').post(async function(req,res){ // 내부에 2개의 쿼�
 			}
 		}).clone(); //1번 실행 시키고 쿼리를 종료한다.
 		console.log(nextWork.length);
-		if(nextWork.length<1) {
+		if(nextWork.length<1) {//중복된 사용자가 없을 때 아래 코드가 진행된다.
 			var data = {id:paramId,name:paramName,age:paramAge,password:paramPassword};//json데이터타입의 객체(배열, 키:밸류)
 			//SQL 문 실행
 			var users = new database.UserModel(data);// UserModel 인스턴스 생성
-			// save()로 저장
+			// 몽고DB의 insert()함수대신 몽구스 save()함수로 저장
 			users.save(function(err) {
 				if (err) {
 					console.log(err);
