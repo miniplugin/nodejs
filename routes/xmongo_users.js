@@ -130,7 +130,7 @@ router.route('/adduser').post(async function(req,res){ // 내부에 2개의 쿼�
 			//SQL 문 실행
 			var users = new database.UserModel(data);// UserModel 인스턴스 생성
 			// 몽고DB의 insert()함수대신 몽구스 save()함수로 저장
-			users.save(function(err, result) {{//입력성공 시 반환 값으로 입력한 값을 구할 수 있다.
+			users.save(function(err, result) {//입력성공 시 반환 값으로 입력한 값을 구할 수 있다.
 				if (err) {
 					console.log(err);
 					res.end();
