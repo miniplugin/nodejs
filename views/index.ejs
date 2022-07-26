@@ -27,7 +27,8 @@
         <% if(logined == true) { %>
         	<button onclick="location.replace('/users/logout');">로그아웃</button>
         <% } else { %>
-        	<button onclick="location.replace('/users/login');">로그인</button>
+        	<button onclick="location.replace('/users/login');">MySQL로그인</button>
+			<button onclick="location.replace('/xmongo_users/login');">Mongo로그인</button>
         <% } %>
 		<script>
 			var btnVote = document.getElementById('btnVote'); //투표하기 버튼객체 생성

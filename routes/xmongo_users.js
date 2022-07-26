@@ -81,6 +81,67 @@ database.db.on('disconnected', function() {
 	database.db = mongoose.connection;
 });
 
+// 로그인 화면
+router.get('/login', function(req, res, next) {
+    console.log('/xmongo_users/login 호출됨.');
+    res.render('xmongo_users/login', { title: '몽고DB용 로그인 폼' });
+});
+// 삭제 delete 처리
+router.route('/deleteuser').post(function(req,res) {
+    if(database.db) {
+		var paramId = req.body.id;
+		query = { "id":paramId },
+		database.UserModel.deleteOne(query, function (err,result) {
+			console.log(result['deletedCount']);
+			if(err) {
+				res.locals.message = err.message;
+				res.locals.error = err;
+				res.render('error');//공통 error.ejs 에러페이지 사용
+			}
+			if(result['deletedCount'] > 0) {//삭제성공 시 반환 값으로 삭제한 개수를 구할 수 있다.
+				res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
+				res.write('<script>alert("삭제되었습니다.");location.replace("/xmongo_users/listuser");</script>');
+				res.end();
+			}
+		});
+    }
+});
+
+// 업데이트 update 처리
+router.route('/updateuser').post(function(req,res) {
+    console.log('/xmongo_users/updateuser post 호출됨');
+    if(database.db) {
+		var paramId = req.body.id;
+		var paramName = req.body.name;
+		var paramAge = req.body.age;
+		var paramPassword = req.body.password;
+		if(paramPassword !="") {
+		   paramPassword = crypto.createHash("sha1").update(paramPassword).digest("hex");
+			var updateSet = {name:paramName,age:paramAge,password:paramPassword};
+		}else{
+			var updateSet = {name:paramName,age:paramAge};
+		}
+		query = { "id":paramId },
+		update = {
+			"$set": updateSet
+		},
+		options = { "multi": true };//필수는 아니다.
+		database.UserModel.updateOne(query, update, options, function (err,result) {
+			if(err) {
+				res.locals.message = err.message;
+				res.locals.error = err;
+				res.render('error');//공통 error.ejs 에러페이지 사용
+			}
+			if(result['modifiedCount'] > 0) {//수정성공 시 반환 값으로 수정한 개수를 구할 수 있다.
+				res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
+				res.write('<script>alert("수정되었습니다.");location.replace("/xmongo_users/updateuser?id='+paramId+'");</script>');
+				res.end();
+			}else{
+				res.send('<script>alert("수정된 값이 없습니다.");location.replace("/xmongo_users/updateuser?id='+paramId+'");</script>');
+			}
+		});
+    }
+});
 //업데이트페이지 get
 router.route('/updateuser').get(function(req,res){
     console.log('/xmongo_users/updateuser get 호출됨');
@@ -130,13 +191,13 @@ router.route('/adduser').post(async function(req,res){ // 내부에 2개의 쿼�
 			//SQL 문 실행
 			var users = new database.UserModel(data);// UserModel 인스턴스 생성
 			// 몽고DB의 insert()함수대신 몽구스 save()함수로 저장
-			users.save(function(err) {
+			users.save(function(err, result) {{//입력성공 시 반환 값으로 입력한 값을 구할 수 있다.
 				if (err) {
 					console.log(err);
 					res.end();
 					return;
 				}
-				console.log("사용자 데이터 추가함.");
+				console.log("사용자 데이터 추가함. %j", result);
 				res.send('<script>alert("등록 되었습니다.");window.location="/xmongo_users/listuser"</script>');
 			});
 		}
@@ -172,7 +233,7 @@ router.route('/listuser').get(async function(req,res){
     if(database.db) {
 		query = {id: { $regex: '.*'+keyword+'.*' }},
 		project = {},
-		options = { sort:{age: 1}, skip:(page-1)*perPage, limit:perPage };
+		options = { sort:{age:1, created_at:-1}, skip:(page-1)*perPage, limit:perPage };
 		//db.users.find({id: { $regex: '.*user.*' } }).sort({age:1}).skip(0).limit(5); //Compass 에서 사용하는 함수
 		//database.UserModel.find({id: { $regex: '.*'+keyword+'.*' } }).count().exec(function(err,rows2){
 		await database.UserModel.find(query,project).count(function(err,rows2){

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title><%=title%></title>
+        <style>
+            table{border:1px solid black;border-collapse:collapse;width:100%;} 
+            td{border:1px solid black;padding:10px;}
+        </style>
+    </head>
+    <title>사용자 로그인 테스트</title>
+    <body>
+        <h1>사용자 로그인</h1>
+        <br>
+        <form method="post" action="/xmongo_users/login">
+            <table>
+                <tr>
+                    <td>아이디</td>
+                    <td><input type="text" name="id" required></td>
+                </tr>
+                <tr>
+                    <td>암호</td>
+                    <td><input type="password" name="password" required></td>
+                </tr>
+                <tr>
+	                <td colspan="2">
+                    	<input type="submit" value="로그인">
+                        <input type="button" onclick="location.replace('/xmongo_users/adduser');" value="회원등록">
+                        <input type="button" onclick="location.replace('/');" value="홈으로">
+                	</td>
+                </tr>
+            </table>
+        </form>
+    </body>
+</html>
