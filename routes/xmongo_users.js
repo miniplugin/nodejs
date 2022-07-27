@@ -269,9 +269,9 @@ router.route('/listuser').get(async function(req,res){
 	var perPageNavi = 10; //하단 페이지네비 개수
 	var startPage = ((page-1)/perPageNavi)*perPageNavi+1;//하단 페이지네비의 시작 페이지
 	var endPage = startPage + perPageNavi -1;//하단 페이지네비의 끝 페이지
-    //if(req.session.login_id != 'admin') {
-    //    res.send('<script>alert("관리자만 접근 가능합니다.");window.location="/"</script>');
-    //}
+    if(req.session.login_id != 'admin') {
+        res.send('<script>alert("관리자만 접근 가능합니다.");window.location="/"</script>');
+    }
     if(database.db) {
 		query = {id: { $regex: '.*'+keyword+'.*' }},
 		project = {},
