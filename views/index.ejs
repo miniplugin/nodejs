@@ -27,8 +27,21 @@
         <% if(logined == true) { %>
         	<button onclick="location.replace('/users/logout');">로그아웃</button>
         <% } else { %>
-        	<button onclick="location.replace('/users/login');">MySQL로그인</button>
-			<button onclick="location.replace('/xmongo_users/login');">Mongo로그인</button>
+        	<button onclick="location.replace('/users/login');">로그인</button>
+        <% } %>
+		<br>
+		<% if(logined == true) { %>
+		<button id="btnVote">몽고DB용 투표하기</button>
+		<button id="btnVoteDel">몽고DB용 초기화하기</button>
+        <% } %>
+		<button id="btnHome">몽고DB용 홈페이지로이동</button>
+        <% if(login_id == 'admin') { %>
+            <input type="button" onclick="location.replace('/xmongo_users/listuser');" value="몽고DB용 회원리스트">
+        <% } %>
+        <% if(logined == true) { %>
+			<button onclick="location.replace('/xmongo_users/logout');">몽고DB용 로그아웃</button>
+        <% } else { %>
+			<button onclick="location.replace('/xmongo_users/login');">몽고DB용 로그인</button>
         <% } %>
 		<script>
 			var btnVote = document.getElementById('btnVote'); //투표하기 버튼객체 생성

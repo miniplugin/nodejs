@@ -81,6 +81,47 @@ database.db.on('disconnected', function() {
 	database.db = mongoose.connection;
 });
 
+//몽고DB용 로그아웃 처리
+router.get('/logout', function(req, res, next) {
+  req.session.destroy();
+  res.redirect('/');
+});
+
+// 로그인 post 함수
+router.post('/login', function(req, res, next) {
+    console.log('/xmongo_users/login post 호출됨.');
+    var paramId = req.body.id;
+    var paramPassword = req.body.password;
+	/* 프로시저를 사용하면 샐략 */
+    if(paramPassword !="") {
+       paramPassword = crypto.createHash("sha1").update(paramPassword).digest("hex");
+    }
+    if(database.db) {
+		//SQL 문 실행 프로시저를 사용하면 샐략(아래) - 주석 해제
+		query = { "id":paramId, "password":paramPassword }; //조회 조건이 2개 일때 사용
+		database.UserModel.find(query, function(err,rows){
+			if(err) {
+				console.log('로그인 쿼리 에러발생'+err.stack);
+				res.end();
+				return;
+			}
+			console.log(rows.length);
+			if(rows.length > 0) {
+				req.session.logined = true;//서버에서 사용
+				req.session.login_id = paramId;//서버에서 사용
+				console.log(req.session.login_id);
+				res.send('<script>alert("로그인 되었습니다.");location.replace("/");</script>');
+			}else{
+				res.send('<script>alert("로그인이 실패 하였습니다.");location.replace("/xmongo_users/login")</script>');
+			}                
+		});
+    }else{
+        //pool이 false일때
+        res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
+        res.write('<h2>데이터베이스 연결 실패.</h2>');
+        res.end();
+    }
+});
 // 로그인 화면
 router.get('/login', function(req, res, next) {
     console.log('/xmongo_users/login 호출됨.');
