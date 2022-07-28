@@ -8,7 +8,6 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var xmongo_users = require('./routes/xmongo_users');// 몽고DB용
-var xmongo_chart = require('./routes/xmongo_chart');// 몽고DB용
 
 var app = express();
 
@@ -47,7 +46,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/xmongo_users',xmongo_users);// 몽고DB용
-app.use('/xmongo_chart',xmongo_chart);// 몽고DB용
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

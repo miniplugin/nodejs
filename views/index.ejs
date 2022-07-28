@@ -30,11 +30,6 @@
         	<button onclick="location.replace('/users/login');">로그인</button>
         <% } %>
 		<br>
-		<% if(logined == true) { %>
-		<button id="btnVote">몽고DB용 투표하기</button>
-		<button id="btnVoteDel">몽고DB용 초기화하기</button>
-        <% } %>
-		<button id="btnHome">몽고DB용 홈페이지로이동</button>
         <% if(login_id == 'admin') { %>
             <input type="button" onclick="location.replace('/xmongo_users/listuser');" value="몽고DB용 회원리스트">
         <% } %>
