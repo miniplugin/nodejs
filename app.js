@@ -42,7 +42,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+//리액트JS 추가
+var cors = require('cors');//리액트와 노드js간 데이터 통신에 포트변경에 따른 보안 처리모듈
+app.use(cors());//모안처리 모둘을 앱에서 사용한다.
+app.use('/chart',express.static(path.join(__dirname, 'chart-app/build')));
+app.get('/chart', function (req, res) {
+  res.sendFile(path.join(__dirname, '/chart-app/build/index.html'));
+});
+//리액트JS 끝
 app.use('/', index);
 app.use('/users', users);
 app.use('/xmongo_users',xmongo_users);// 몽고DB용
