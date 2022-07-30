@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { useState } from "react";
+import Chart from './Chart';//Chart.js 생략
 
 function App() {
   var date = new Date();
@@ -29,7 +30,8 @@ function App() {
     <div className="App">
     	<span>오늘 일자 : {nowDate}</span>
     	<h1>{counter}</h1>
-      		<button onClick={countUp}>Click me</button>
+		  {/* <button onClick={countUp}>투표하기</button> */}
+		    <Chart text="투표하기" onClick={countUp} />
     {/*
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
