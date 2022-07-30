@@ -1,7 +1,7 @@
 function Chart(props) { //{text,onClick} 으로 사용가능
 	return (
 		<span>
-		<select id="selVote">
+		<select id="selVote" onChange={props.onChange} value={props.selectVal}>
 			<option value="red">Red</option>
 			<option value="blue">Blue</option>
 			<option value="yellow">Yellow</option>
@@ -9,6 +9,7 @@ function Chart(props) { //{text,onClick} 으로 사용가능
 			<option value="purple">Purple</option>
 			<option value="orange">Orange</option>
 		</select>
+		<input type="text" onChange={props.onChange} value={props.selectVal} />
 		<button onClick={props.onClick}>{props.text}</button>
 		</span>
 	);

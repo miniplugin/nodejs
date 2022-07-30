@@ -15,10 +15,14 @@ function App() {
       console.log(counter);
   };
   */
+  var [selectVal, setSelect] = useState('red');
+  var [colorStyle, setColorStyle] = useState();
+  var onChange = (e) => setSelect(e.target.value);
   //countUp 함수를 람다식으로 변경(아래)
   var countUp = () => {
 	  setCounter(counter + 1);
-	  console.log("람다식사용" + counter);
+	  console.log("람다식사용" + counter + ", 선택한 색상", selectVal);
+	  setColorStyle({background:selectVal,opacity:0.5});
 	  //데이터 객체 연습(아래)
 	  const [a,b,c,d] = ["one", "two", 3, 4];// 익명 객체에는 데이터를 바로 입력가능. 단, 상수는 선언과 동시에 값(리터럴)을 등록해야 한다.
 	  console.log(b,c);
@@ -29,9 +33,9 @@ function App() {
   return (
     <div className="App">
     	<span>오늘 일자 : {nowDate}</span>
-    	<h1>{counter}</h1>
+    	<h1 style={colorStyle}>{counter}</h1> {/* 인라인 스타일 style={{background:selectVal}} */}
 		  {/* <button onClick={countUp}>투표하기</button> */}
-		    <Chart text="투표하기" onClick={countUp} />
+		    <Chart text="투표하기" onClick={countUp} onChange={onChange} selectVal={selectVal} />
     {/*
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
