@@ -16,7 +16,7 @@ function App() {
     <div className="App">
     	<span>오늘 일자 : {nowDate}</span>
     	<h1>{counter}</h1>
-      		<button onClick={countUp}>Click me</button>
+      		<button onClick={countUp}>투표하기</button>
     {/*
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
