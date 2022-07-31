@@ -32,7 +32,7 @@ function App() {
 	  var {red, blue, yellow, green, purple, orange} = jsonData;//객체의 분배할당 이라고 한다.
 	  console.log(jsonData.red, red); //객체의 red와 분배 할당된 red는 같은 값을 가진다.
   }
-  var count=0;//2번 실행되는 것을 방지하는 코드
+  
   useEffect( () => { //화면에 변화가 있는지 확인 후 실행할 때(=화면이 html객체모두 로딩 후) useEffect 함수를 사용한다.
 	    var url = 'https://nodejs-jvbqr.run.goorm.io/chart/getdata';
 		fetch (url)
@@ -80,18 +80,15 @@ function App() {
 						}
 					};
 				//myChart 객체 생성(아래)  : 여기서 ctx 영역에 Chart 데이터 객체가 출력된다.
-				if(count==0) {//2번 실행되는 것을 방지하는 코드
-					var myChart = new Chart(ctx, {
-						type: 'bar',//radar, doughnut, pie, polar, bubble, scatter, area 챠트종류 선택
-						data: {
-							labels: [],
-							datasets: datasets_line_bar
-						},
-						options: options_line_bar
-					});
-					//myChart.destroy();
-				}
-				count++;
+				var myChart = new Chart(ctx, {
+					type: 'bar',//radar, doughnut, pie, polar, bubble, scatter, area 챠트종류 선택
+					data: {
+						labels: [],
+						datasets: datasets_line_bar
+					},
+					options: options_line_bar
+				});
+				//myChart.destroy();
 			})
 			.catch (() => 
 					console.log ('Can’t access ' + url + ' response. Blocked by browser?')
