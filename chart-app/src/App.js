@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
-import { useState } from "react";
-import Chart from './Chart';//Chart.js 생략
+import { useEffect, useState } from 'react';
+import Chart2 from './Chart';//Chart.js 생략
 
 function App() {
   var date = new Date();
@@ -17,6 +17,8 @@ function App() {
   */
   var [selectVal, setSelect] = useState('red');
   var [colorStyle, setColorStyle] = useState();
+  //var chartData = {"red":12,"blue":19,"yellow":3,"green":5,"purple":2,"orange":3};
+  //var [chartData, setChartData] = useState({"red":12,"blue":19,"yellow":3,"green":5,"purple":2,"orange":3});
   var onChange = (e) => setSelect(e.target.value);
   //countUp 함수를 람다식으로 변경(아래)
   var countUp = () => {
@@ -30,12 +32,78 @@ function App() {
 	  var {red, blue, yellow, green, purple, orange} = jsonData;//객체의 분배할당 이라고 한다.
 	  console.log(jsonData.red, red); //객체의 red와 분배 할당된 red는 같은 값을 가진다.
   }
+  var count=0;//2번 실행되는 것을 방지하는 코드
+  useEffect( () => { //화면에 변화가 있는지 확인 후 실행할 때(=화면이 html객체모두 로딩 후) useEffect 함수를 사용한다.
+	    var url = 'https://nodejs-jvbqr.run.goorm.io/chart/getdata';
+		fetch (url)
+			.then (response => response.json())
+			.then (contents => {
+				var jsonData=contents[0]; 
+				console.log ('JSON--------------: ', jsonData);
+			
+				var btnVote = document.getElementById('btnVote');//투표하기 버튼객체 생성
+				var selVote = document.getElementById('selVote');//좋아하는색성 선택객체 생성
+				//var jsonData = {"red":12,"blue":19,"yellow":3,"green":5,"purple":2,"orange":3};//초기 json 데이터객체 생성
+				//var jsonData = [12, 19, 3, 5, 2, 3];//참조: 자바스크립트의 배열구조
+				var ctx = document.getElementById('myChart').getContext('2d');//막대그래프 출력영역 객체 생성
+
+				btnVote.onclick = function () {
+					alert();
+				}
+				//myChart 시작
+				var datasets_line_bar = [{ //데이터내용 배열 객체 생성
+					label: '본인이 좋아하는 색상 설문조사',
+					data: jsonData,
+					backgroundColor: [
+						'rgba(255, 99, 132, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(153, 102, 255, 0.2)',
+						'rgba(255, 159, 64, 0.2)'
+					],
+					borderColor: [
+						'rgba(255, 99, 132, 1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)',
+						'rgba(255, 159, 64, 1)'
+					],
+					borderWidth: 1
+				}];
+				var options_line_bar = { //데이터 출력옵션 객체
+						scales: {
+							y: {
+								beginAtZero: true
+							}
+						}
+					};
+				//myChart 객체 생성(아래)  : 여기서 ctx 영역에 Chart 데이터 객체가 출력된다.
+				if(count==0) {//2번 실행되는 것을 방지하는 코드
+					var myChart = new Chart(ctx, {
+						type: 'bar',//radar, doughnut, pie, polar, bubble, scatter, area 챠트종류 선택
+						data: {
+							labels: [],
+							datasets: datasets_line_bar
+						},
+						options: options_line_bar
+					});
+					//myChart.destroy();
+				}
+				count++;
+			})
+			.catch (() => 
+					console.log ('Can’t access ' + url + ' response. Blocked by browser?')
+			);
+	}, []);//마지막 [] 배열값은 변경 기준 상태값으로 디자인을 지정할 때 사용한다. 지정하지 않으면, 최초 1회만 실행 된다.
   return (
     <div className="App">
+		{/*
     	<span>오늘 일자 : {nowDate}</span>
-    	<h1 style={colorStyle}>{counter}</h1> {/* 인라인 스타일 style={{background:selectVal}} */}
+    	<h1 style={colorStyle}>{counter}</h1>  인라인 스타일 style={{background:selectVal}} */}
 		  {/* <button onClick={countUp}>투표하기</button> */}
-		    <Chart text="투표하기" onClick={countUp} onChange={onChange} selectVal={selectVal} />
+		    <Chart2 text="투표하기" onClick={countUp} onChange={onChange} selectVal={selectVal} />
     {/*
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
