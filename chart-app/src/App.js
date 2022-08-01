@@ -35,9 +35,9 @@ function App() {
   
   useEffect( () => { //화면에 변화가 있는지 확인 후 실행할 때(=화면이 html객체모두 로딩 후) useEffect 함수를 사용한다.
 	    var url = 'https://nodejs-jvbqr.run.goorm.io/chart/getdata';
-		fetch (url)
-			.then (response => response.json())
-			.then (contents => {
+		fetch (url, {method:'get'})
+			.then (response => response.json()) //응답데이터를 json 형태로 변환
+			.then (contents => { //json으로 변환된 응답데이터인 contents 를 가지고 구현하는 내용
 				var jsonData=contents[0]; 
 				console.log ('JSON--------------: ', jsonData);
 			
@@ -90,10 +90,9 @@ function App() {
 				});
 				//myChart.destroy();
 			})
-			.catch (() => 
-					console.log ('Can’t access ' + url + ' response. Blocked by browser?')
-			);
-	}, []);//마지막 [] 배열값은 변경 기준 상태값으로 디자인을 지정할 때 사용한다. 지정하지 않으면, 최초 1회만 실행 된다.
+			.catch (() => console.log ('에러: ' + url + '에 접속할 수 없습니다.'));
+
+	}, []);//마지막 [] 배열 값은 변경 기준 상태 값으로 디자인을 재생할 때 사용한다. 지정하지 않으면, 최초 1회만 실행 된다.
   return (
     <div className="App">
 		{/*
