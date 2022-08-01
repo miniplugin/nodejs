@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Chart(props) { //{text,onClick} 으로 사용가능
 	return (
 		<div>
@@ -12,7 +14,8 @@ function Chart(props) { //{text,onClick} 으로 사용가능
 			</select>
 			<button id="btnVote">투표하기</button>
 			<button id="btnVoteDel">초기화하기</button>
-			<button id="btnHome">홈페이지로이동</button>
+			<Link to="/chart"><button id="btnHome">홈페이지로이동</button></Link>
+			<Link to="/chart/login"><button id="btnHome">API로그인</button></Link>
 		</div>
 	);
 	/*
