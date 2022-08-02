@@ -7,12 +7,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from './Login';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
-//var [loginId, setLoginId] = useState();
-//var [password, setPassword] = useState();
+/*
+var [loginId, setLoginId] = useState();
+var [password, setPassword] = useState();
 var onChange = (e) => {
 	setLoginId(e.target.value);
 }
+*/
 var onSubmit = () => {
 	var paramId = document.getElementById('id').value;
 	var paramPassword = document.getElementById('password').value;
