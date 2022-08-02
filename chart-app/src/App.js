@@ -41,8 +41,8 @@ function App() {
 				var jsonData=contents[0]; 
 				console.log ('JSON--------------: ', jsonData);
 			
-				var btnVote = document.getElementById('btnVote');//투표하기 버튼객체 생성
-				var selVote = document.getElementById('selVote');//좋아하는색성 선택객체 생성
+				//var btnVote = document.getElementById('btnVote');//투표하기 버튼객체 생성
+				//var selVote = document.getElementById('selVote');//좋아하는색성 선택객체 생성
 				//var jsonData = {"red":12,"blue":19,"yellow":3,"green":5,"purple":2,"orange":3};//초기 json 데이터객체 생성
 				//var jsonData = [12, 19, 3, 5, 2, 3];//참조: 자바스크립트의 배열구조
 				var ctx = document.getElementById('myChart').getContext('2d');//막대그래프 출력영역 객체 생성
