@@ -277,10 +277,11 @@ router.post('/api/login', function(req, res, next) {
                     req.session.logined = true;//서버에서 사용
                     req.session.login_id = paramId;//서버에서 사용
                     console.log(req.session.login_id);
-					res.end(JSON.stringify(result));//json 데이터를 문자열로 변환한 후 ejs 디자인으로 응답한다.
+					res.end(JSON.stringify({status:200, success:'ok', data:result[0]['cnt']}));//json 데이터를 문자열로 변환한 후 ejs 디자인으로 응답한다.
                     //res.send('<script>alert("로그인 되었습니다.");location.replace("/chart");</script>');
                 }else{
-                    res.send('<script>alert("로그인이 실패 하였습니다.");location.replace("/chart/login")</script>');
+                    //res.send('<script>alert("로그인이 실패 하였습니다.");location.replace("/chart/login")</script>');
+					res.end(JSON.stringify({status:200, success:'ok', data:result[0]['cnt']}));//json 데이터를 문자열로 변환한 후 ejs 디자인으로 응답한다.
                 }                
             });
         });

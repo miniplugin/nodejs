@@ -27,7 +27,7 @@ function Chart(props) { //{text,onClick} 으로 사용가능
 			{
 				props.logined==null
 				?<Link to="/chart/login"><button id="btnHome">API로그인</button></Link>
-				:<button onClick={props.onClick}>API로그아웃</button>
+				:<button onClick={props.onLogout}>API로그아웃</button>
 			}
 		</div>
 	);

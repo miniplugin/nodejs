@@ -8,17 +8,26 @@ import Login from './Login';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-var submit = () => {
-	alert('로그인 액션');
+//var [loginId, setLoginId] = useState();
+//var [password, setPassword] = useState();
+var onChange = (e) => {
+	setLoginId(e.target.value);
+}
+var onSubmit = () => {
+	var paramId = document.getElementById('id').value;
+	var paramPassword = document.getElementById('password').value;
+	//alert(paramPassword);
 	var url = 'https://nodejs-jvbqr.run.goorm.io/users/api/login';
-	fetch (url, {method:'post', body: JSON.stringify({ id: 'admin', password: '1234'}), headers: new Headers({ 'Content-Type': 'application/json' })})
+	fetch (url, {method:'post', body: JSON.stringify({ id: paramId, password: paramPassword}), headers: new Headers({ 'Content-Type': 'application/json' })})
 		.then (response => response.json()) //응답데이터를 json 형태로 변환
-		//.then (response => console.log(response))
+		//.then (response => console.log(response.success))
 		.then (response => {
-			if (response.length > 0) {
+			if (response.data > 0) {
 				sessionStorage.setItem('logined', true);
 				sessionStorage.setItem('login_id', 'admin');
 				alert("로그인 되었습니다.");location.replace("/chart");
+			}else{
+				alert("로그인 실패 다시 로그인 해 주세요.");
 			}
 		})
 		.catch (() => console.log ('에러: ' + url + '에 접속할 수 없습니다.'));
@@ -28,7 +37,7 @@ root.render(
 	<BrowserRouter>
 		<Routes>
 		  <Route path="chart" element={<App />} />
-		  <Route path="chart/login" element={<Login onClick={submit} />} />
+		  <Route path="chart/login" element={<Login onSubmit={onSubmit} />} />
 		</Routes>
     </BrowserRouter>
 	//<React.StrictMode>

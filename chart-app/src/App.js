@@ -32,7 +32,7 @@ function App() {
 	  var {red, blue, yellow, green, purple, orange} = jsonData;//객체의 분배할당 이라고 한다.
 	  console.log(jsonData.red, red); //객체의 red와 분배 할당된 red는 같은 값을 가진다.
   }
-  var logOut = () => {
+  var onLogout = () => {
 	  sessionStorage.removeItem('logined');
 	  sessionStorage.removeItem('login_id');
       // App 으로 이동(새로고침)
@@ -104,7 +104,7 @@ function App() {
     	<span>오늘 일자 : {nowDate}</span>
     	<h1 style={colorStyle}>{counter}</h1>  인라인 스타일 style={{background:selectVal}} */}
 		  {/* <button onClick={countUp}>투표하기</button> */}
-		    <Chart2 text="투표하기" onClick={logOut} onChange={onChange} selectVal={selectVal} logined={logined} />
+		    <Chart2 text="투표하기" onClick={countUp} onChange={onChange} selectVal={selectVal} logined={logined} onLogout={onLogout} />
     {/*
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />

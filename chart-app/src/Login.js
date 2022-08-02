@@ -9,15 +9,15 @@ function Login(props) {
 				<table><tbody>
 					<tr>
 						<td>아이디</td>
-						<td><input type="text" name="id" required/></td>
+						<td><input type="text" id="id" required/></td>
 					</tr>
 					<tr>
 						<td>암호</td>
-						<td><input type="password" name="password" required/></td>
+						<td><input type="password" id="password" required/></td>
 					</tr>
 					<tr>
 						<td colSpan="2">
-							<input type="button" onClick={props.onClick} value="로그인"/>
+							<input type="button" onClick={props.onSubmit} value="로그인"/>
 							{/*<input type="button" value="리스트"/>*/}
 							<Link to="/chart"><input type="button" value="홈으로"/></Link>
 						</td>
