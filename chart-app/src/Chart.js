@@ -12,10 +12,23 @@ function Chart(props) { //{text,onClick} 으로 사용가능
 				<option value="purple">Purple</option>
 				<option value="orange">Orange</option>
 			</select>
-			<button id="btnVote">투표하기</button>
-			<button id="btnVoteDel">초기화하기</button>
+			{
+				props.logined==null
+				? (
+					null
+				):(
+					<span>
+					<button id="btnVote">투표하기</button>
+					<button id="btnVoteDel">초기화하기</button>
+					</span>
+				)
+			}
 			<Link to="/chart"><button id="btnHome">홈페이지로이동</button></Link>
-			<Link to="/chart/login"><button id="btnHome">API로그인</button></Link>
+			{
+				props.logined==null
+				?<Link to="/chart/login"><button id="btnHome">API로그인</button></Link>
+				:<button onClick={props.onClick}>API로그아웃</button>
+			}
 		</div>
 	);
 	/*

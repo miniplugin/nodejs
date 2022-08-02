@@ -32,7 +32,15 @@ function App() {
 	  var {red, blue, yellow, green, purple, orange} = jsonData;//객체의 분배할당 이라고 한다.
 	  console.log(jsonData.red, red); //객체의 red와 분배 할당된 red는 같은 값을 가진다.
   }
-  
+  var logOut = () => {
+	  sessionStorage.removeItem('logined');
+	  sessionStorage.removeItem('login_id');
+      // App 으로 이동(새로고침)
+      location.replace("/chart");
+  }
+  var logined = sessionStorage.getItem('logined');
+  var login_id = sessionStorage.getItem('login_id');
+  console.log(logined);
   useEffect( () => { //화면에 변화가 있는지 확인 후 실행할 때(=화면이 html객체모두 로딩 후) useEffect 함수를 사용한다.
 	    var url = 'https://nodejs-jvbqr.run.goorm.io/chart/getdata';
 		fetch (url, {method:'get'})
@@ -40,16 +48,13 @@ function App() {
 			.then (contents => { //json으로 변환된 응답데이터인 contents 를 가지고 구현하는 내용
 				var jsonData=contents[0]; 
 				console.log ('JSON--------------: ', jsonData);
-			
-				var btnVote = document.getElementById('btnVote');//투표하기 버튼객체 생성
-				var selVote = document.getElementById('selVote');//좋아하는색성 선택객체 생성
+				//console.log('세션-------------: ', session.login_id);
+				//var btnVote = document.getElementById('btnVote');//투표하기 버튼객체 생성
+				//var selVote = document.getElementById('selVote');//좋아하는색성 선택객체 생성
 				//var jsonData = {"red":12,"blue":19,"yellow":3,"green":5,"purple":2,"orange":3};//초기 json 데이터객체 생성
 				//var jsonData = [12, 19, 3, 5, 2, 3];//참조: 자바스크립트의 배열구조
 				var ctx = document.getElementById('myChart').getContext('2d');//막대그래프 출력영역 객체 생성
 
-				btnVote.onclick = function () {
-					alert();
-				}
 				//myChart 시작
 				var datasets_line_bar = [{ //데이터내용 배열 객체 생성
 					label: '본인이 좋아하는 색상 설문조사',
@@ -99,7 +104,7 @@ function App() {
     	<span>오늘 일자 : {nowDate}</span>
     	<h1 style={colorStyle}>{counter}</h1>  인라인 스타일 style={{background:selectVal}} */}
 		  {/* <button onClick={countUp}>투표하기</button> */}
-		    <Chart2 text="투표하기" onClick={countUp} onChange={onChange} selectVal={selectVal} />
+		    <Chart2 text="투표하기" onClick={logOut} onChange={onChange} selectVal={selectVal} logined={logined} />
     {/*
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />

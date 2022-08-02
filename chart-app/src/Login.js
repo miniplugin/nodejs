@@ -17,7 +17,7 @@ function Login(props) {
 					</tr>
 					<tr>
 						<td colSpan="2">
-							<input type="submit" value="로그인"/>
+							<input type="button" onClick={props.onClick} value="로그인"/>
 							{/*<input type="button" value="리스트"/>*/}
 							<Link to="/chart"><input type="button" value="홈으로"/></Link>
 						</td>

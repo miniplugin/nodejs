@@ -257,4 +257,38 @@ router.post('/login', function(req, res, next) {
     }
 });
 
+router.post('/api/login', function(req, res, next) {
+	var paramId = req.body.id;
+    var paramPassword = req.body.password;
+    console.log('요청 파라미터: '+paramId+','+paramPassword);
+    if(pool) {
+        pool.getConnection(function(err, conn){
+            console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId);
+			var exec = conn.query('select FN_auth(?,?) as cnt', [paramId,paramPassword], function(err, result){ //함수 사용 추가
+                conn.release();
+                console.log('SQL구문 확인: '+exec.sql);
+                if(err) {
+                    console.log('로그인 쿼리 에러발생'+err.stack);
+                    res.end();
+                    return;
+                }
+                console.log(result[0]['cnt']);
+                if(result[0]['cnt'] > 0) {
+                    req.session.logined = true;//서버에서 사용
+                    req.session.login_id = paramId;//서버에서 사용
+                    console.log(req.session.login_id);
+					res.end(JSON.stringify(result));//json 데이터를 문자열로 변환한 후 ejs 디자인으로 응답한다.
+                    //res.send('<script>alert("로그인 되었습니다.");location.replace("/chart");</script>');
+                }else{
+                    res.send('<script>alert("로그인이 실패 하였습니다.");location.replace("/chart/login")</script>');
+                }                
+            });
+        });
+    }else{
+        //pool이 false일때
+        res.writeHead('200',{'Content-Type':'text/html;charset=utf8'});
+        res.write('<h2>데이터베이스 연결 실패.</h2>');
+        res.end();
+    }
+});
 module.exports = router;
