@@ -25,13 +25,13 @@ var onSubmit = () => {
 		.then (response => {
 			if (response.data > 0) {
 				sessionStorage.setItem('logined', true);
-				sessionStorage.setItem('login_id', 'admin');
+				sessionStorage.setItem('login_id', paramId);
 				alert("로그인 되었습니다.");location.replace("/chart");
 			}else{
 				alert("로그인 실패 다시 로그인 해 주세요.");
 			}
 		})
-		.catch (() => console.log ('에러: ' + url + '에 접속할 수 없습니다.'));
+		.catch ((err) => console.log ('에러: ' + err + '때문에 접속할 수 없습니다.'));
 }
 
 root.render(
