@@ -71,7 +71,7 @@ function App() {
 				alert("저장 실패. 서버 관리지에 문의 하세요");
 			}
 		})
-		.catch ((err) => console.log ('에러: ' + err + '에 접속할 수 없습니다.'));
+		.catch ((err) => console.log ('에러: ' + err + '때문에 접속할 수 없습니다.'));
   }
    var onDelete = () => {
 	alert(login_id);
@@ -88,7 +88,7 @@ function App() {
 				alert("삭제 실패. 서버 관리지에 문의 하세요");
 			}
 		})
-		.catch ((err) => console.log ('에러: ' + err + '에 접속할 수 없습니다.'));
+		.catch ((err) => console.log ('에러: ' + err + '때문에 접속할 수 없습니다.'));
 	}
   }
   useEffect( () => { //화면에 변화가 있는지 확인 후 실행할 때(=화면이 html객체모두 로딩 후) useEffect 함수를 사용한다.
@@ -144,7 +144,7 @@ function App() {
 					options: options_line_bar
 				});
 			})
-			.catch ((err) => console.log ('에러: ' + err + '에 접속할 수 없습니다.'));
+			.catch ((err) => console.log ('에러: ' + err + '때문에 접속할 수 없습니다.'));
 	  		//myChart.destroy();
   }, []);//마지막 [] 배열 값은 변경 기준 상태 값으로 디자인을 재생할 때 사용한다. 지정하지 않으면, 최초 1회만 실행 된다.
   return (
