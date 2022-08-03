@@ -32,17 +32,67 @@ function App() {
 	  var {red, blue, yellow, green, purple, orange} = jsonData;//객체의 분배할당 이라고 한다.
 	  console.log(jsonData.red, red); //객체의 red와 분배 할당된 red는 같은 값을 가진다.
   }
+  
   var onLogout = () => {
 	  sessionStorage.removeItem('logined');
 	  sessionStorage.removeItem('login_id');
       // App 으로 이동(새로고침)
-      location.replace("/chart");
+      document.location.href = '/chart'; //리액트에서 표준이다. 다음 처럼 사용은 권장 안함.location.replace("/chart")
   }
   var logined = sessionStorage.getItem('logined');
   var login_id = sessionStorage.getItem('login_id');
-  console.log(logined);
+  console.log(login_id);
+  var myChart;
+  var updateRender = () => {
+	   var url = 'https://nodejs-jvbqr.run.goorm.io/chart/getdata';
+		fetch (url, {method:'get'})
+			.then (response => response.json()) //응답데이터를 json 형태로 변환
+			.then (contents => { //json으로 변환된 응답데이터인 contents 를 가지고 구현하는 내용
+				var jsonData=contents[0];
+				myChart.data.datasets[0].data = jsonData;//결과적으로 json데이터를 만들어야함.
+			    myChart.update();
+		})
+			.catch ((err) => console.log ('에러: ' + err + '에 접속할 수 없습니다.'));
+  }
+  var onVote = () => {
+	var selectVote = document.getElementById('selVote');
+	var selectColor = selectVote.options[selectVote.selectedIndex].value;
+	//alert(selectColor + login_id);
+	var url = 'https://nodejs-jvbqr.run.goorm.io/chart/api/setdata';
+	fetch (url, {method:'post', body: JSON.stringify({ selectColor: selectColor, login_id: login_id}), headers: new Headers({ 'Content-Type': 'application/json' })})
+		.then (response => response.json()) //응답데이터를 json 형태로 변환
+		//.then (response => console.log(response.data.affectedRows))//디버그용
+		.then (response => {
+			if (response.data.affectedRows > 0) {
+				alert("저장 되었습니다.");
+				updateRender();
+				//location.replace("/chart"); 화면 리플레시 대신에 챠트만 업데이트 되게 처리
+			}else{
+				alert("저장 실패. 서버 관리지에 문의 하세요");
+			}
+		})
+		.catch ((err) => console.log ('에러: ' + err + '때문에 접속할 수 없습니다.'));
+  }
+   var onDelete = () => {
+	//alert(login_id);
+	if (confirm('정말로 초기화 하시겠습니까, 투표한 DB자료가 삭제됩니다.')) {
+	var url = 'https://nodejs-jvbqr.run.goorm.io/chart/api/deldata';
+	fetch (url, {method:'post', body: JSON.stringify({login_id: login_id}), headers: new Headers({ 'Content-Type': 'application/json' })})
+		.then (response => response.json()) //응답데이터를 json 형태로 변환
+		//.then (response => console.log(response))//디버그용
+		.then (response => {
+			if (response.data.affectedRows > 0) {
+				alert("삭제 되었습니다.");
+				updateRender();
+			}else{
+				alert("삭제 실패. 서버 관리지에 문의 하세요");
+			}
+		})
+		.catch ((err) => console.log ('에러: ' + err + '때문에 접속할 수 없습니다.'));
+	}
+  }
   useEffect( () => { //화면에 변화가 있는지 확인 후 실행할 때(=화면이 html객체모두 로딩 후) useEffect 함수를 사용한다.
-	    var url = 'https://nodejs-jvbqr.run.goorm.io/chart/getdata';
+	   var url = 'https://nodejs-jvbqr.run.goorm.io/chart/getdata';
 		fetch (url, {method:'get'})
 			.then (response => response.json()) //응답데이터를 json 형태로 변환
 			.then (contents => { //json으로 변환된 응답데이터인 contents 를 가지고 구현하는 내용
@@ -85,7 +135,7 @@ function App() {
 						}
 					};
 				//myChart 객체 생성(아래)  : 여기서 ctx 영역에 Chart 데이터 객체가 출력된다.
-				var myChart = new Chart(ctx, {
+				myChart = new Chart(ctx, {
 					type: 'bar',//radar, doughnut, pie, polar, bubble, scatter, area 챠트종류 선택
 					data: {
 						labels: [],
@@ -93,18 +143,17 @@ function App() {
 					},
 					options: options_line_bar
 				});
-				//myChart.destroy();
 			})
 			.catch ((err) => console.log ('에러: ' + err + '때문에 접속할 수 없습니다.'));
-
-	}, []);//마지막 [] 배열 값은 변경 기준 상태 값으로 디자인을 재생할 때 사용한다. 지정하지 않으면, 최초 1회만 실행 된다.
+	  		//myChart.destroy();
+  }, []);//마지막 [] 배열 값은 변경 기준 상태 값으로 디자인을 재생할 때 사용한다. 지정하지 않으면, 최초 1회만 실행 된다.
   return (
     <div className="App">
 		{/*
     	<span>오늘 일자 : {nowDate}</span>
     	<h1 style={colorStyle}>{counter}</h1>  인라인 스타일 style={{background:selectVal}} */}
 		  {/* <button onClick={countUp}>투표하기</button> */}
-		    <Chart2 text="투표하기" onClick={countUp} onChange={onChange} selectVal={selectVal} logined={logined} onLogout={onLogout} />
+		    <Chart2 text="투표하기" onDelete={onDelete} onVote={onVote} onClick={countUp} onChange={onChange} selectVal={selectVal} logined={logined} onLogout={onLogout} />
     {/*
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />

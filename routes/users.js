@@ -273,6 +273,8 @@ router.post('/api/login', function(req, res, next) {
                 console.log(result[0]['cnt']);
                 if(result[0]['cnt'] > 0) {
                     console.log(req.session.login_id);
+					req.session.logined = true;//서버에서 사용
+                    req.session.login_id = paramId;//서버에서 사용
 					res.end(JSON.stringify({status:200, success:'ok', data:result[0]['cnt']}));
                 }else{
 					res.end(JSON.stringify({status:200, success:'ok', data:result[0]['cnt']}));
