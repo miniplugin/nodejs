@@ -179,8 +179,8 @@ router.route('/chart/getdata').get(function (req, res) {
 //챠트 저장 외부 API 만들기
 router.route('/chart/api/setdata').post(function (req, res) {
 	var selectColor = req.body.selectColor;//프로시저 사용 추가
-	var sessionId = req.session.login_id;
-    if(sessionId == null) sessionId = req.body.login_id;//users 테이블 회원명을 입력한다. 나중에 로그인 기능 추가시 동적값으로…
+	var sessionId = req.session.login_id; //서버세션 값이 있을 때
+    if(sessionId == null) sessionId = req.body.login_id;//노드js 의 session이 아닌 리액트의 세션스토리지 값을 사용한다.
 	if (pool) {
         pool.getConnection(function (err, conn) {
             console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId);
@@ -209,14 +209,14 @@ router.route('/chart/api/setdata').post(function (req, res) {
 });
 // 챠트 데이터 삭제하기 API
 router.route('/chart/api/deldata').post(function (req, res) {
-	var sessionId = req.session.login_id;
+	var sessionId = req.session.login_id;//세션 스토리지는 해킹할 수 있기 때문에 서버세션 값이 있을 때 사용 보안코딩 추가
+	if(sessionId == null) sessionId = req.body.login_id;//노드js 의 session이 아닌 리액트의 세션스토리지 값을 사용한다.
 	console.log('/chart/deldata 호출됨.');
 	if (pool) {
         // 커넥션 풀에서 연결 객체를 가져옴
         pool.getConnection(function (err, conn) {
 			console.log('body: ' + req.body.login_id);
             var tablename = 'tbl_chart';
-            if(sessionId == null) sessionId = req.body.login_id;
             var exec = conn.query('delete from ?? where users_id = ?', [tablename,sessionId], function (err, result) {
                 conn.release(); // 반드시 해제해야 함
 				console.log('실행 대상 SQL : ' + exec.sql);

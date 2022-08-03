@@ -26,7 +26,8 @@ var onSubmit = () => {
 			if (response.data > 0) {
 				sessionStorage.setItem('logined', true);
 				sessionStorage.setItem('login_id', paramId);
-				alert("로그인 되었습니다.");location.replace("/chart");
+				alert("로그인 되었습니다.");
+				document.location.href = '/chart'; //리액트에서 표준이다. 다음 처럼 사용은 권장 안함.location.replace("/chart")
 			}else{
 				alert("로그인 실패 다시 로그인 해 주세요.");
 			}
