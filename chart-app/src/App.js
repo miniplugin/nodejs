@@ -95,7 +95,7 @@ function App() {
 				});
 				//myChart.destroy();
 			})
-			.catch (() => console.log ('에러: ' + url + '에 접속할 수 없습니다.'));
+			.catch ((err) => console.log ('에러: ' + err + '때문에 접속할 수 없습니다.'));
 
 	}, []);//마지막 [] 배열 값은 변경 기준 상태 값으로 디자인을 재생할 때 사용한다. 지정하지 않으면, 최초 1회만 실행 된다.
   return (
