@@ -176,10 +176,11 @@ router.route('/chart/getdata').get(function (req, res) {
 	}
 });
 
-//챠느 외부 API 만들기
+//챠트 저장 외부 API 만들기
 router.route('/chart/api/setdata').post(function (req, res) {
 	var selectColor = req.body.selectColor;//프로시저 사용 추가
-    var sessionId = req.body.login_id;//users 테이블 회원명을 입력한다. 나중에 로그인 기능 추가시 동적값으로…
+	var sessionId = req.session.login_id;
+    if(sessionId == null) sessionId = req.body.login_id;//users 테이블 회원명을 입력한다. 나중에 로그인 기능 추가시 동적값으로…
 	if (pool) {
         pool.getConnection(function (err, conn) {
             console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId);
@@ -208,14 +209,17 @@ router.route('/chart/api/setdata').post(function (req, res) {
 });
 // 챠트 데이터 삭제하기 API
 router.route('/chart/api/deldata').post(function (req, res) {
+	var sessionId = req.session.login_id;
 	console.log('/chart/deldata 호출됨.');
 	if (pool) {
         // 커넥션 풀에서 연결 객체를 가져옴
         pool.getConnection(function (err, conn) {
+			console.log('body: ' + req.body.login_id);
             var tablename = 'tbl_chart';
-            var sessionId = req.body.login_id;
+            if(sessionId == null) sessionId = req.body.login_id;
             var exec = conn.query('delete from ?? where users_id = ?', [tablename,sessionId], function (err, result) {
                 conn.release(); // 반드시 해제해야 함
+				console.log('실행 대상 SQL : ' + exec.sql);
                 if (err) {
                     console.error('SQL 실행 시 에러 발생함.%j', err.stack);
                     res.end();

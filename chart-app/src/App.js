@@ -74,7 +74,7 @@ function App() {
 		.catch ((err) => console.log ('에러: ' + err + '때문에 접속할 수 없습니다.'));
   }
    var onDelete = () => {
-	alert(login_id);
+	//alert(login_id);
 	if (confirm('정말로 초기화 하시겠습니까, 투표한 DB자료가 삭제됩니다.')) {
 	var url = 'https://nodejs-jvbqr.run.goorm.io/chart/api/deldata';
 	fetch (url, {method:'post', body: JSON.stringify({login_id: login_id}), headers: new Headers({ 'Content-Type': 'application/json' })})
