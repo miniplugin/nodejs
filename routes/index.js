@@ -176,4 +176,63 @@ router.route('/chart/getdata').get(function (req, res) {
 	}
 });
 
+//챠느 외부 API 만들기
+router.route('/chart/api/setdata').post(function (req, res) {
+	var selectColor = req.body.selectColor;//프로시저 사용 추가
+    var sessionId = req.body.login_id;//users 테이블 회원명을 입력한다. 나중에 로그인 기능 추가시 동적값으로…
+	if (pool) {
+        pool.getConnection(function (err, conn) {
+            console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId);
+            var columns = ['red', 'blue', 'yellow', 'green', 'purple', 'orange', 'users_id'];
+			var tablename = 'tbl_chart';
+			var exec = conn.query('CALL insert_chart(?,?, @msg);', [sessionId,selectColor], function (err, result) {
+                conn.release(); // 반드시 해제해야 함
+                console.log('실행 대상 SQL : ' + exec.sql);
+                if (err) {
+                    console.error('SQL 실행 시 에러 발생함.' + err.stack);
+                    res.end();
+                    return;
+                }
+                res.end(JSON.stringify({status:200, success:'ok', data:result}));
+            });
+            conn.on('error', function (err) {
+                console.error('데이터베이스 연결 시 에러 발생함.' + err.stack);
+                res.end();
+            });
+        });
+	} else {
+		// 데이터베이스 객체가 초기화되지 않은 경우 실패 응답 전송
+		console.error('pool 객체가 생성되지 않았습니다. : ' + err.stack);
+		res.end();
+	}
+});
+// 챠트 데이터 삭제하기 API
+router.route('/chart/api/deldata').post(function (req, res) {
+	console.log('/chart/deldata 호출됨.');
+	if (pool) {
+        // 커넥션 풀에서 연결 객체를 가져옴
+        pool.getConnection(function (err, conn) {
+            var tablename = 'tbl_chart';
+            var sessionId = req.body.login_id;
+            var exec = conn.query('delete from ?? where users_id = ?', [tablename,sessionId], function (err, result) {
+                conn.release(); // 반드시 해제해야 함
+                if (err) {
+                    console.error('SQL 실행 시 에러 발생함.%j', err.stack);
+                    res.end();
+                    return;
+                }
+                console.log(result);
+                res.end(JSON.stringify({status:200, success:'ok', data:result}));
+            });
+            conn.on('error', function (err) {
+                console.error('데이터베이스 연결 시 에러 발생함. %j', err.stack);
+                res.end();
+            });
+        });
+	} else {
+		// 데이터베이스 객체가 초기화되지 않은 경우 실패 응답 전송
+		console.error('pool 객체가 생성되지 않았습니다. : ' + err.stack);
+		res.end();
+	}
+});
 module.exports = router;

@@ -257,6 +257,7 @@ router.post('/login', function(req, res, next) {
     }
 });
 
+//외부 API 만들기
 router.post('/api/login', function(req, res, next) {
 	var paramId = req.body.id;
     var paramPassword = req.body.password;

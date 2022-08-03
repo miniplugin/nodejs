@@ -18,8 +18,8 @@ function Chart(props) { //{text,onClick} 으로 사용가능
 					null
 				):(
 					<span>
-					<button id="btnVote">투표하기</button>
-					<button id="btnVoteDel">초기화하기</button>
+					<button id="btnVote" onClick={props.onVote}>투표하기</button>
+					<button id="btnVoteDel" onClick={props.onDelete}>초기화하기</button>
 					</span>
 				)
 			}
