@@ -211,7 +211,7 @@ router.route('/chart/api/setdata').post(function (req, res) {
 router.route('/chart/api/deldata').post(function (req, res) {
 	var sessionId = req.session.login_id;//세션 스토리지는 해킹할 수 있기 때문에 서버세션 값이 있을 때 사용 보안코딩 추가
 	if(sessionId == null) sessionId = req.body.login_id;//노드js 의 session이 아닌 리액트의 세션스토리지 값을 사용한다.
-	console.log('/chart/deldata 호출됨.');
+	console.log('/chart/api/deldata 호출됨.');
 	if (pool) {
         // 커넥션 풀에서 연결 객체를 가져옴
         pool.getConnection(function (err, conn) {
