@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 function KakaoMap(props) {
-	useEffect(() => {
+	useEffect(() => { //화면에 변화가 있는지 확인 후 실행할 때(=화면이 html객체모두 로딩 후) useEffect 함수를 사용한다.
 		var mapContainer = document.getElementById('map'), // 지도를 표시할 div  
 			mapOption = { 
 				center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
