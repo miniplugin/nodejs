@@ -19,7 +19,7 @@ root.render(
 	<BrowserRouter>
 		<Routes>
 		  <Route path="chart" element={<App />} />
-		  <Route path="chart/login" element={<Login onSubmit={onSubmit} />} />
+		  <Route path="chart/login" element={<Login />} />
 		</Routes>
     </BrowserRouter>
 	//<React.StrictMode>

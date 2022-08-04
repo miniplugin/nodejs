@@ -1,3 +1,6 @@
+import { useEffect } from 'react'; //아래 useEffect()함수 사용하기 위해서…
+import { Link } from "react-router-dom";
+
 function Chart2(props) { //{text,onClick} 으로 사용가능
 	var myChart; //챠트 객체를 전역으로 사용하기 위해서 객체 선언을 상단으로 뺀다.
 	var updateRender = () => {
@@ -151,4 +154,4 @@ function Chart2(props) { //{text,onClick} 으로 사용가능
 	//return <button onClick={onClick}>{text}</button>
 }
 
-export default Chart; //현재 컴포넌트를 외부에서 사용가능하게 처리
+export default Chart2; //현재 컴포넌트를 외부에서 사용가능하게 처리
