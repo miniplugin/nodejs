@@ -29,6 +29,7 @@ function Chart(props) { //{text,onClick} 으로 사용가능
 				?<Link to="/chart/login"><button id="btnHome">API로그인</button></Link>
 				:<button onClick={props.onLogout}>API로그아웃</button>
 			}
+			<Link to="/chart/kakaomap"><button id="btnHome">카카오 맵</button></Link>
 		</div>
 	);
 	/*

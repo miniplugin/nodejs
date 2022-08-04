@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from './Login';
+import KakaoMap from './KakaoMap';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 /*
@@ -40,6 +41,7 @@ root.render(
 		<Routes>
 		  <Route path="chart" element={<App />} />
 		  <Route path="chart/login" element={<Login onSubmit={onSubmit} />} />
+		  <Route path="chart/kakaomap" element={<KakaoMap />} />
 		</Routes>
     </BrowserRouter>
 	//<React.StrictMode>
