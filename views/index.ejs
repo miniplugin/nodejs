@@ -224,7 +224,8 @@
                 });
 				}
 			});
-			btnVote.onclick = function () {
+			//btnVote.onclick = function () { 로그인 하지 않았을 때 에러나서 수정
+			$('#btnVote').on('click', function () {
 				var selVote = document.getElementById("selVote");//프로시저 사용 추가
 				var selectColor = selVote.options[selVote.selectedIndex].text;//프로시저 사용 추가
 				var voteIdx = document.getElementById('selVote').options.selectedIndex;
@@ -291,7 +292,7 @@
                         alert("API서버가 작동하지 않습니다. 다음에 이용해 주세요");
                     }
                 });	
-            }
+            });
 		</script>
 		<script>
 			$(document).ready(function () {
