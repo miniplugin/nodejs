@@ -44,7 +44,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 //리액트JS 추가
 var cors = require('cors');//리액트와 노드js간 데이터 통신에 포트변경에 따른 보안 처리모듈
-app.use(cors());//모안처리 모둘을 앱에서 사용한다.
+app.use(cors());//보안처리 모둘을 앱에서 사용한다.
 app.use('/chart',express.static(path.join(__dirname, 'chart-app/build')));
 app.get('/chart', function (req, res) {
   res.sendFile(path.join(__dirname, '/chart-app/build/index.html'));
@@ -82,7 +82,7 @@ var http = require('http').createServer(app);
 //socket.io 소켓 통신 객체생성 시 http를 객체로 전달
 var io = require("socket.io")(http, { //현재는 socket.io 는 4.5.1 버전이다. http서버 소켓통신에서 cors 허용하기 위해서 아래 추가
 	cors: {
-	  origin: "https://nodejs-jvbqr.run.goorm.io", //도메인 대신에 * 로 하면 모든 도메인에서 허용된다. 보안상 도메인을 지정하는것이 안전하다.
+	  origin: ["https://nodejs-jvbqr.run.goorm.io","https://react-jvbqr.run.goorm.io"], //도메인 대신에 * 로 하면 모든 도메인에서 허용된다. 보안상 도메인을 지정하는것이 안전하다.
 	  methods: ["GET", "POST"]
 	}
 });

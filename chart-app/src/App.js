@@ -68,6 +68,7 @@ function App() {
 			if (response.data.affectedRows > 0) {
 				alert("저장 되었습니다.");
 				updateRender();
+				socket.emit("OnOff", {msg:'updateRender'});//1:1통신 노드js로 문자를 OnOff 에 담아서 보냄.
 				//location.replace("/chart"); 화면 리플레시 대신에 챠트만 업데이트 되게 처리
 			}else{
 				alert("저장 실패. 서버 관리지에 문의 하세요");
@@ -86,6 +87,7 @@ function App() {
 			if (response.data.affectedRows > 0) {
 				alert("삭제 되었습니다.");
 				updateRender();
+				socket.emit("OnOff", {msg:'updateRender'});//1:1통신 노드js로 문자를 OnOff 에 담아서 보냄.
 			}else{
 				alert("삭제 실패. 서버 관리지에 문의 하세요");
 			}
@@ -94,6 +96,13 @@ function App() {
 	}
   }
   useEffect( () => { //화면에 변화가 있는지 확인 후 실행할 때(=화면이 html객체모두 로딩 후) useEffect 함수를 사용한다.
+	  socket.on('OnOff', function(jsonMsg){
+			//msg = JSON.stringify(jsonMsg);//json데이터를 스트링데이터로 변경
+			console.log(socket.id+"가 받은 메세지는 "+jsonMsg.msg);
+			if(jsonMsg.msg=="updateRender") {
+				  updateRender();
+			}
+	  });
 	   var url = 'https://nodejs-jvbqr.run.goorm.io/chart/getdata';
 		fetch (url, {method:'get'})
 			.then (response => response.json()) //응답데이터를 json 형태로 변환

@@ -27,6 +27,13 @@
     <title>React App</title>
 	<script  src="https://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
+	<script src="https://socket-jvbqr.run.goorm.io/socket.io/socket.io.js">
+			//노드js에서 발생시킨 소켓io.js를 호출
+	</script>
+	<script>
+		var serverUrl = "https://socket-jvbqr.run.goorm.io";
+		var socket = io.connect(serverUrl);//필요시 (serverUrl, socketOptions)
+	</script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
