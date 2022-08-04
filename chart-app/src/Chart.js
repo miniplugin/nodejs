@@ -19,7 +19,7 @@ function Chart2(props) { //{text,onClick} 으로 사용가능
 		var selectColor = selectVote.options[selectVote.selectedIndex].value;
 		//alert(selectColor + login_id);
 		var url = 'https://nodejs-jvbqr.run.goorm.io/chart/api/setdata';
-		fetch (url, {method:'post', body: JSON.stringify({ selectColor: selectColor, login_id: login_id}), headers: new Headers({ 'Content-Type': 'application/json' })})
+		fetch (url, {method:'post', body: JSON.stringify({ selectColor: selectColor, login_id: props.login_id}), headers: new Headers({ 'Content-Type': 'application/json' })})
 			.then (response => response.json()) //응답데이터를 json 형태로 변환
 			//.then (response => console.log(response.data.affectedRows))//디버그용
 			.then (response => {
@@ -37,7 +37,7 @@ function Chart2(props) { //{text,onClick} 으로 사용가능
 	//alert(login_id);
 	if (confirm('정말로 초기화 하시겠습니까, 투표한 DB자료가 삭제됩니다.')) {
 		var url = 'https://nodejs-jvbqr.run.goorm.io/chart/api/deldata';
-		fetch (url, {method:'post', body: JSON.stringify({login_id: login_id}), headers: new Headers({ 'Content-Type': 'application/json' })})
+		fetch (url, {method:'post', body: JSON.stringify({login_id: props.login_id}), headers: new Headers({ 'Content-Type': 'application/json' })})
 			.then (response => response.json()) //응답데이터를 json 형태로 변환
 			//.then (response => console.log(response))//디버그용
 			.then (response => {
