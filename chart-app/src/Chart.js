@@ -1,6 +1,109 @@
-import { Link } from "react-router-dom";
+function Chart2(props) { //{text,onClick} 으로 사용가능
+	var myChart; //챠트 객체를 전역으로 사용하기 위해서 객체 선언을 상단으로 뺀다.
+	var updateRender = () => {
+		  var url = 'https://nodejs-jvbqr.run.goorm.io/chart/getdata';
+		  fetch (url, {method:'get'}) //참고로, 노드js ejs템플릿에서는 $.ajax({url:''…구현내용})를 사용했다.
+		.then (response => response.json()) //응답데이터를 json 형태로 변환
+		.then (contents => { //json으로 변환된 응답데이터인 contents 를 가지고 구현하는 내용
+			  var jsonData=contents[0];
+			  myChart.data.datasets[0].data = jsonData;//결과적으로 json데이터를 만들어야함.
+			  myChart.update();
+		})
+		.catch ((err) => console.log ('에러: ' + err + '에 접속할 수 없습니다.'));
+	}
+	var onVote = () => {
+		var selectVote = document.getElementById('selVote');
+		var selectColor = selectVote.options[selectVote.selectedIndex].value;
+		//alert(selectColor + login_id);
+		var url = 'https://nodejs-jvbqr.run.goorm.io/chart/api/setdata';
+		fetch (url, {method:'post', body: JSON.stringify({ selectColor: selectColor, login_id: login_id}), headers: new Headers({ 'Content-Type': 'application/json' })})
+			.then (response => response.json()) //응답데이터를 json 형태로 변환
+			//.then (response => console.log(response.data.affectedRows))//디버그용
+			.then (response => {
+				if (response.data.affectedRows > 0) { //mysql의 입력,수정,삭제 반환 값을 조건으로
+					alert("저장 되었습니다.");
+					updateRender();
+					//location.replace("/chart"); 챠트만 업데이트 되게 처리하므로 제외
+				}else{
+					alert("저장 실패. 서버 관리지에 문의 하세요");
+				}
+			})
+			.catch ((err) => console.log ('에러: ' + err + '때문에 접속할 수 없습니다.'));
+	}
+	var onDelete = () => {
+	//alert(login_id);
+	if (confirm('정말로 초기화 하시겠습니까, 투표한 DB자료가 삭제됩니다.')) {
+		var url = 'https://nodejs-jvbqr.run.goorm.io/chart/api/deldata';
+		fetch (url, {method:'post', body: JSON.stringify({login_id: login_id}), headers: new Headers({ 'Content-Type': 'application/json' })})
+			.then (response => response.json()) //응답데이터를 json 형태로 변환
+			//.then (response => console.log(response))//디버그용
+			.then (response => {
+				if (response.data.affectedRows > 0) {
+					alert("삭제 되었습니다.");
+					updateRender();
+				}else{
+					alert("삭제 실패. 서버 관리지에 문의 하세요");
+				}
+			})
+			.catch ((err) => console.log ('에러: ' + err + '때문에 접속할 수 없습니다.'));
+		}
+	}
 
-function Chart(props) { //{text,onClick} 으로 사용가능
+	useEffect( () => { //화면에 변화가 있는지 확인 후 실행할 때(=화면이 html객체모두 로딩 후) useEffect 함수를 사용한다.
+		var url = 'https://nodejs-jvbqr.run.goorm.io/chart/getdata';
+		fetch (url, {method:'get'}) // method 는 생략가능, 생략하면 기본이 get 방식
+			.then (response => response.json()) //응답데이터를 json 형태로 변환
+			.then (contents => { //json으로 변환된 응답데이터인 contents 를 가지고 구현하는 내용
+				var jsonData=contents[0]; 
+				console.log ('JSON--------------: ', jsonData);
+				//var btnVote = document.getElementById('btnVote');//투표하기 버튼객체 생성
+				//var selVote = document.getElementById('selVote');//좋아하는색성 선택객체 생성
+				//var jsonData = {"red":12,"blue":19,"yellow":3,"green":5,"purple":2,"orange":3};//초기 json 데이터객체 생성
+				//var jsonData = [12, 19, 3, 5, 2, 3];//참조: 자바스크립트의 배열구조
+				var ctx = document.getElementById('myChart').getContext('2d');//막대그래프 출력영역 객체 생성
+				//myChart 시작
+				var datasets_line_bar = [{ //데이터내용 배열 객체 생성
+					label: '본인이 좋아하는 색상 설문조사',
+					data: jsonData,
+					backgroundColor: [
+						'rgba(255, 99, 132, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(153, 102, 255, 0.2)',
+						'rgba(255, 159, 64, 0.2)'
+					],
+					borderColor: [
+						'rgba(255, 99, 132, 1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)',
+						'rgba(255, 159, 64, 1)'
+					],
+					borderWidth: 1
+				}];
+				var options_line_bar = { //데이터 출력옵션 객체
+						scales: {
+							y: {
+								beginAtZero: true
+							}
+						}
+					};
+				//myChart 객체 생성(아래)  : 여기서 ctx 영역에 Chart 데이터 객체가 출력된다.
+				myChart = new Chart(ctx, {
+					type: 'bar',//radar, doughnut, pie, polar, bubble, scatter, area 챠트종류 선택
+					data: {
+						labels: [],
+						datasets: datasets_line_bar
+					},
+					options: options_line_bar
+				});
+				//myChart.destroy();
+		})
+		.catch ((err) => console.log ('에러: ' + err + '때문에 접속할 수 없습니다.'));
+
+	}, []);//마지막 [] 배열 값은 변경 기준 상태 값으로 디자인을 재생할 때 사용한다. 지정하지 않으면, 최초 1회만 실행 된다.
 	return (
 		<div>
 			<canvas id="myChart" width="400" height="400"></canvas>
@@ -18,8 +121,8 @@ function Chart(props) { //{text,onClick} 으로 사용가능
 					null
 				):(
 					<span>
-					<button id="btnVote" onClick={props.onVote}>투표하기</button>
-					<button id="btnVoteDel" onClick={props.onDelete}>초기화하기</button>
+					<button id="btnVote" onClick={onVote}>투표하기</button>
+					<button id="btnVoteDel" onClick={onDelete}>초기화하기</button>
 					</span>
 				)
 			}
