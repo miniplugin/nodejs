@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 function KakaoMap(props) {
 	useEffect(() => { //화면에 변화가 있는지 확인 후 실행할 때(=화면이 html객체모두 로딩 후) useEffect 함수를 사용한다.
@@ -65,6 +66,8 @@ function KakaoMap(props) {
 	  }, []);
 	return (
 		<div>
+			<h2>전기차 충전소 위치</h2>
+			<Link to="/chart"><button id="btnHome">리액트 홈</button></Link>
 			<div id="map" style={{width:"100%",height:"350px"}}></div>
 		</div>
 	);
