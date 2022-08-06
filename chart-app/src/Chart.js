@@ -11,7 +11,7 @@ function Chart2(props) { //{text,onClick} 으로 사용가능
 				var jsonData=contents[0];
 				myChart.data.datasets[0].data = jsonData;//결과적으로 json데이터를 만들어야함.
 			    myChart.update();
-		})
+			})
 			.catch ((err) => console.log ('에러: ' + err + '에 접속할 수 없습니다.'));
   }
   var onVote = () => {

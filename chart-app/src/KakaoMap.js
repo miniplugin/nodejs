@@ -3,6 +3,16 @@ import { Link } from "react-router-dom";
 
 function KakaoMap(props) {
 	useEffect(() => { //화면에 변화가 있는지 확인 후 실행할 때(=화면이 html객체모두 로딩 후) useEffect 함수를 사용한다.
+		//var url2 = 'https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=f5eef3421c602c6cb7ea224104795888&targetDt=20120101';
+		var url = 'https://nodejs-jvbqr.run.goorm.io/openapi/getdata';
+		fetch (url, {method:'get'})
+			.then (response => response.json()) //응답데이터를 json 형태로 변환
+			.then (contents => { //json으로 변환된 응답데이터인 contents 를 가지고 구현하는 내용
+				var positions=contents['response']['body']['items'];
+				console.log(positions);
+			})
+			.catch ((err) => console.log ('에러: ' + err + '때문에 접속할 수 없습니다.'));
+
 		var mapContainer = document.getElementById('map'), // 지도를 표시할 div  
 			mapOption = { 
 				center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표

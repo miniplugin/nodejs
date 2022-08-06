@@ -239,4 +239,29 @@ router.route('/chart/api/deldata').post(function (req, res) {
 		res.end();
 	}
 });
+// 공공데이터 API 라우팅 함수
+router.route('/openapi/getdata').get(function (req, res) {
+	console.log('/kakao/api/getdata 호출됨.');
+	var request = require('request');//npm install request
+	var convert = require('xml-js');//npm install xml-js
+	var url = 'http://openapi.kepco.co.kr/service/EvInfoServiceV2/getEvSearchList';
+	var queryParams = '?' + encodeURIComponent('serviceKey') + '=PLJPmKeBFGOkoxgAoLJgT962Uh0QPWijxPNQ%2Bl%2B4o24r9R%2BqbclT0Fc9xSamDrGiMYAF4CrpJLaDOsKZ%2FDoN%2Bw%3D%3D'; /* Service Key*/
+	queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
+	queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /* */
+	queryParams += '&' + encodeURIComponent('addr') + '=' + encodeURIComponent('천안'); /* */
+	request({
+		url: url + queryParams,
+		method: 'GET'
+	}, function (error, response, body) {
+		console.log('Status', response.statusCode);
+		console.log('Headers', JSON.stringify(response.headers));
+		console.log('Reponse received', body);
+		/*
+		convert에서 xml2json이라는 함수를 이용해 xml -> json으로 데이터를 파싱했고, 
+		그에 따른 파라미터로 현재 xml 데이터 형식인 body변수를, compact(데이터 간소화 여부), spaces(들여쓰기 포인트)를 이용하여 파싱
+		*/
+		var xmlToJson = convert.xml2json(body, {compact: true, spaces: 4});
+		res.end(xmlToJson);//json 데이터를 문자열로 변환한 후 ejs 디자인으로 응답한다.
+	});
+});
 module.exports = router;
