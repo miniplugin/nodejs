@@ -4,8 +4,15 @@ import { Link } from "react-router-dom";
 function KakaoMap(props) {
 	var [keyword, setKeyword] = useState('천안시');
 	var onChange = (e) => setKeyword(e.target.value);
+	function removeAllChildNods(el) {   
+		while (el.hasChildNodes()) {
+			el.removeChild (el.lastChild);
+		}//기술참조:https://apis.map.kakao.com/web/sample/keywordList/
+	}
 	var onSearch = () => {
 		alert(keyword);
+		var mapContainer = document.getElementById('map');
+		removeAllChildNods(mapContainer);//기존 카카오맵 겍체 지우기
 		getData();
 	};
 	var getData = () => {
@@ -36,7 +43,6 @@ function KakaoMap(props) {
 					};
 
 				var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
-				
 				// 마커를 표시할 위치와 내용을 가지고 있는 객체 배열입니다 
 				/*var positions = [
 					{
