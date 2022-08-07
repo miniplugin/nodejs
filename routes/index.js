@@ -243,6 +243,7 @@ router.route('/chart/api/deldata').post(function (req, res) {
 router.route('/openapi/getdata').get(function (req, res) {
 	console.log('/openapi/getdata 호출됨.');
 	keyword = req.query.keyword || '천안시';//리액트js 에서 보낸 검색어를 지정한다.
+	console.log(keyword);
 	var request = require('request');//npm install request
 	var convert = require('xml-js');//npm install xml-js
 	var url = 'http://openapi.kepco.co.kr/service/EvInfoServiceV2/getEvSearchList';

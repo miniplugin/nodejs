@@ -49,6 +49,9 @@ app.use('/chart',express.static(path.join(__dirname, 'chart-app/build')));
 app.get('/chart', function (req, res) {
   res.sendFile(path.join(__dirname, '/chart-app/build/index.html'));
 });
+app.get('/chart/kakaomap', function (req, res) {
+  res.sendFile(path.join(__dirname, '/chart-app/build/index.html'));
+});
 //리액트JS 끝
 app.use('/', index);
 app.use('/users', users);

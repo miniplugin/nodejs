@@ -9,8 +9,7 @@ function KakaoMap(props) {
 			el.removeChild (el.lastChild);
 		}//기술참조:https://apis.map.kakao.com/web/sample/keywordList/
 	}
-	var onSearch = () => {
-		alert(keyword);
+	var onSearch = () => { //alert(keyword);
 		var mapContainer = document.getElementById('map');
 		removeAllChildNods(mapContainer);//기존 카카오맵 겍체 지우기
 		getData();
@@ -103,7 +102,7 @@ function KakaoMap(props) {
 	return (
 		<div>
 			<h2>전기차 충전소 위치</h2>
-			<span>회원id검색</span>
+			<span>충전소시도검색</span>
 			<input type="text" onChange={onChange} value={keyword} />
 			<input type="button" onClick={onSearch} value="검색" />
 			<Link to="/chart"><button id="btnHome">리액트 홈</button></Link>
