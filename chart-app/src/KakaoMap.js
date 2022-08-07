@@ -1,14 +1,21 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function KakaoMap(props) {
-	useEffect(() => { //화면에 변화가 있는지 확인 후 실행할 때(=화면이 html객체모두 로딩 후) useEffect 함수를 사용한다.
-		var url = 'https://nodejs-jvbqr.run.goorm.io/openapi/getdata';
+	var [keyword, setKeyword] = useState('천안시');
+	var onChange = (e) => setKeyword(e.target.value);
+	var onSearch = () => {
+		alert(keyword);
+		getData();
+	};
+	var getData = () => {
+		var url = 'https://nodejs-jvbqr.run.goorm.io/openapi/getdata?keyword='+keyword;
 		fetch (url, {method:'get'})
 			.then (response => response.json()) //응답데이터를 json 형태로 변환
 			.then (contents => { //json으로 변환된 응답데이터인 contents 를 가지고 구현하는 내용
 				var positions = [];//배열 선언
 				var jsonData;
+				console.log(contents);
 				jsonData=contents['response']['body']['items'];
 				jsonData['item'].forEach((element) => {//람다식 사용 function(element) {}
 					positions.push(
@@ -83,10 +90,16 @@ function KakaoMap(props) {
 				}
 			})
 			.catch ((err) => console.log ('에러: ' + err + '때문에 접속할 수 없습니다.'));
+	}
+	useEffect(() => { //화면에 변화가 있는지 확인 후 실행할 때(=화면이 html객체모두 로딩 후) useEffect 함수를 사용한다.
+		getData();
 	  }, []);
 	return (
 		<div>
 			<h2>전기차 충전소 위치</h2>
+			<span>회원id검색</span>
+			<input type="text" onChange={onChange} value={keyword} />
+			<input type="button" onClick={onSearch} value="검색" />
 			<Link to="/chart"><button id="btnHome">리액트 홈</button></Link>
 			<div id="map" style={{width:"100%",height:"350px"}}></div>
 		</div>

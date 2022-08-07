@@ -242,7 +242,7 @@ router.route('/chart/api/deldata').post(function (req, res) {
 // 공공데이터 API 라우팅 함수
 router.route('/openapi/getdata').get(function (req, res) {
 	console.log('/openapi/getdata 호출됨.');
-	keyword = req.body.keyword;//리액트js 에서 보낸 검색어를 지정한다.
+	keyword = req.query.keyword || '천안시';//리액트js 에서 보낸 검색어를 지정한다.
 	var request = require('request');//npm install request
 	var convert = require('xml-js');//npm install xml-js
 	var url = 'http://openapi.kepco.co.kr/service/EvInfoServiceV2/getEvSearchList';
