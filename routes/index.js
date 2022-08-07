@@ -241,14 +241,15 @@ router.route('/chart/api/deldata').post(function (req, res) {
 });
 // 공공데이터 API 라우팅 함수
 router.route('/openapi/getdata').get(function (req, res) {
-	console.log('/kakao/api/getdata 호출됨.');
+	console.log('/openapi/getdata 호출됨.');
+	keyword = req.body.keyword;//리액트js 에서 보낸 검색어를 지정한다.
 	var request = require('request');//npm install request
 	var convert = require('xml-js');//npm install xml-js
 	var url = 'http://openapi.kepco.co.kr/service/EvInfoServiceV2/getEvSearchList';
 	var queryParams = '?' + encodeURIComponent('serviceKey') + '=PLJPmKeBFGOkoxgAoLJgT962Uh0QPWijxPNQ%2Bl%2B4o24r9R%2BqbclT0Fc9xSamDrGiMYAF4CrpJLaDOsKZ%2FDoN%2Bw%3D%3D'; /* Service Key*/
 	queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
 	queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /* */
-	queryParams += '&' + encodeURIComponent('addr') + '=' + encodeURIComponent('천안'); /* */
+	queryParams += '&' + encodeURIComponent('addr') + '=' + encodeURIComponent(keyword); /* 천안시 고정값 대신 keyword */
 	request({
 		url: url + queryParams,
 		method: 'GET'
