@@ -248,7 +248,7 @@ router.route('/openapi/getdata').get(function (req, res) {
 	var queryParams = '?' + encodeURIComponent('serviceKey') + '=PLJPmKeBFGOkoxgAoLJgT962Uh0QPWijxPNQ%2Bl%2B4o24r9R%2BqbclT0Fc9xSamDrGiMYAF4CrpJLaDOsKZ%2FDoN%2Bw%3D%3D'; /* Service Key*/
 	queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
 	queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /* */
-	queryParams += '&' + encodeURIComponent('addr') + '=' + encodeURIComponent('천안'); /* */
+	queryParams += '&' + encodeURIComponent('addr') + '=' + encodeURIComponent('천안시'); /* */
 	request({
 		url: url + queryParams,
 		method: 'GET'
