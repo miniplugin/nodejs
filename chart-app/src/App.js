@@ -22,7 +22,8 @@ function App() {
   var onChange = (e) => setSelect(e.target.value);
   //countUp 함수를 람다식으로 변경(아래)
   var countUp = () => {
-	  setCounter(counter + 1);
+	  setCounter(counter + 1);//화면처리
+	  counter = counter + 1;//js 처리를 하지 않으면,아래 처럼 화면의 counter는 5인데, js프로그램의 콘솔에서 4로 나온다.
 	  console.log("람다식사용" + counter + ", 선택한 색상", selectVal);
 	  setColorStyle({background:selectVal,opacity:0.5});
 	  //데이터 객체 연습(아래)
